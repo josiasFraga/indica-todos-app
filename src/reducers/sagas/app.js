@@ -528,6 +528,60 @@ function* loadUserData({payload}) {
 }
 
 
+function* changePassword({payload}) {
+
+	const networkStatus = yield NetInfo.fetch();
+	
+	if ( !networkStatus.isConnected ) {
+		yield AlertHelper.show(
+			'warn',
+			'Sem conexão',
+			'Você está sem conexão com a internet.',
+		  );
+		  return true;
+	}
+
+	console.log('[SAGA] - ALTERANDO A SENHA DO USUÁRIO');
+	console.log(payload);
+	
+	let data = new FormData();
+	let dados = payload.submitValues;
+
+	data.append('dados', JSON.stringify(dados));
+
+	try {
+		const response = yield call(callApi, { 
+			endpoint: CONFIG.url+'/users/change-password.json',
+			method: 'POST',
+			data: data,
+			headers: {
+				'content-type': 'multipart/form-data',
+			},
+		});
+
+		console.log('[SAGA] - [ALTERANDO SENHA]', response);
+		yield payload.setSubmitting(false);
+
+		if ( response.data.status == 'ok' ) {
+
+			yield payload.callback_success();
+		} else {
+
+			yield AlertHelper.show('error', 'Erro',  response.data.message);
+		}
+
+	} catch ({message, response}) {
+		if (response.data && response.data.code == 401) {
+			yield logout({payload: {}});
+		} else {
+			console.error('[SAGA] - [ALTERANDO SENHA]', { message, response });
+			yield AlertHelper.show('error', 'Erro', message);
+			
+		}
+		yield payload.setSubmitting(false);
+	}
+}
+
 export default function* () {
 	yield takeLatest('REGISTER_TRIGGER', registerTrigger);
 	yield takeLatest('LOGIN_TRIGGER', login);
@@ -536,7 +590,7 @@ export default function* () {
 	yield takeLatest('LOAD_SERVICE_CATEGORIES',	loadServiceCategories);
 	yield takeLatest('LOAD_SERVICE_PROVIDERS',	loadServiceProviders);
 	yield takeLatest('SAVE_VISIT',	saveVisit);
-	yield takeLatest('LOAD_USER_DATA',	loadUserData);	
-	yield takeLatest('LOGOUT',	logout);	
-	
+	yield takeLatest('LOAD_USER_DATA',	loadUserData);
+	yield takeLatest('CHANGE_PASSWORD',	changePassword);
+	yield takeLatest('LOGOUT',	logout);
 }

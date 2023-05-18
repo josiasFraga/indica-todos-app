@@ -125,6 +125,7 @@ export default function Routes(props){
 
         <Stack.Screen name="PrestadorDetalhe" component={CenaPrestadorDetalhe} />
 
+
         <Stack.Group screenOptions={{ presentation: 'modal' }}>
           <Stack.Screen name="SelecionaLocalizacao" component={CenaSelecionaLocalizacao} />
         </Stack.Group>
