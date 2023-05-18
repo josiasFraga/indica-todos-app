@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "478275925211",
+    "project_id": "indicatodos-fec45",
+    "storage_bucket": "indicatodos-fec45.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:478275925211:android:8557511673fde9052b88fe",
+        "android_client_info": {
+          "package_name": "com.indicatodos"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "478275925211-ri6pq8j7o30tqks6ssf8ndu38ol0a13q.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.indicatodos",
+            "certificate_hash": "db4db3dd5d92713038d88f2d7d5286a9d16c2c60"
+          }
+        },
+        {
+          "client_id": "478275925211-d4veic7271i9tbo33eh09r2525qb6ulf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDXixPVoU8iEnpJESDw5Q_xoVTK3_-sJi8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "478275925211-d4veic7271i9tbo33eh09r2525qb6ulf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
