@@ -527,7 +527,6 @@ function* loadUserData({payload}) {
 
 }
 
-
 function* changePassword({payload}) {
 
 	const networkStatus = yield NetInfo.fetch();
@@ -582,6 +581,59 @@ function* changePassword({payload}) {
 	}
 }
 
+function* saveProfilePhoto({payload}) {
+
+	const networkStatus = yield NetInfo.fetch();
+	
+	if ( !networkStatus.isConnected ) {
+		yield AlertHelper.show(
+			'warn',
+			'Sem conexão',
+			'Você está sem conexão com a internet.',
+		  );
+		  return true;
+	}
+
+	console.log('[SAGA] - ALTERANDO A FOTO DO USUÁRIO');
+	var { photo } = payload;
+	
+	let data = new FormData();
+	data.append('photo', photo);
+
+	try {
+		const response = yield call(callApi, { 
+			endpoint: CONFIG.url+'/users/change-photo.json',
+			method: 'POST',
+			data: data,
+			headers: {
+				'content-type': 'multipart/form-data',
+			},
+		});
+
+		console.log('[SAGA] - [ALTERANDO FOTO]', response);
+		//yield payload.setSubmitting(false);
+
+		if ( response.data.status == 'ok' ) {
+		
+			yield AlertHelper.show('success', 'Tudo certo', 'Sua foto foi alterada com sucesso!');
+
+			yield payload.callback_success();
+		} else {
+
+			yield AlertHelper.show('error', 'Erro',  response.data.message);
+		}
+
+	} catch ({message, response}) {
+		if (response.data && response.data.code == 401) {
+			yield logout({payload: {}});
+		} else {
+			console.error('[SAGA] - [ALTERANDO FOTO]', { message, response });
+			yield AlertHelper.show('error', 'Erro', message);
+			
+		}
+	}
+}
+
 export default function* () {
 	yield takeLatest('REGISTER_TRIGGER', registerTrigger);
 	yield takeLatest('LOGIN_TRIGGER', login);
@@ -592,5 +644,6 @@ export default function* () {
 	yield takeLatest('SAVE_VISIT',	saveVisit);
 	yield takeLatest('LOAD_USER_DATA',	loadUserData);
 	yield takeLatest('CHANGE_PASSWORD',	changePassword);
+	yield takeLatest('SAVE_PROFILE_PHOTO',	saveProfilePhoto);
 	yield takeLatest('LOGOUT',	logout);
 }

@@ -7,6 +7,7 @@ import MenuItem from './MenuItem';
 import { useDispatch } from 'react-redux';
 import { StackActions, CommonActions, useNavigation } from '@react-navigation/native';
 import ModalMudaSenha from '@components/Modals/ModalMudaSenha';
+import ModalChooseOrSendPhoto from '@components/Modals/ModalChooseOrSendPhoto';
 
 export default function MenusUsuario () {
 
@@ -14,6 +15,7 @@ export default function MenusUsuario () {
     const dispatch = useDispatch();
 
     const [modalSenhaVisivel, setModalSenhaVisivel] = React.useState(false);
+    const [modalPhotoVisible, setModalPhotoVisible] = React.useState(false);
 
     const logout = () => {
       dispatch({
@@ -34,6 +36,26 @@ export default function MenusUsuario () {
       })
     };
 
+    const callbackBeforeChooseImage = () => {
+
+    }
+
+    const callbackAfterChooseImage = (source) => {
+
+      setModalPhotoVisible(false);
+      dispatch({
+        type: 'SAVE_PROFILE_PHOTO',
+        payload: {
+          photo: source,
+          callback_success: () => {
+            dispatch({
+              type: "LOAD_USER_DATA",
+            });
+          }
+        }
+      });
+    }
+
     const list = [
 
         {
@@ -41,7 +63,7 @@ export default function MenusUsuario () {
           subtitle: '',
           loading: false,
           onPress: () => {
-            this.props.openChooseModal();
+            setModalPhotoVisible(true);
           }
         },
         {
@@ -64,8 +86,14 @@ export default function MenusUsuario () {
     return (
       <>
         <ModalMudaSenha 
-        visible={modalSenhaVisivel}
-        setModalVisible={setModalSenhaVisivel}
+					visible={modalSenhaVisivel}
+					setModalVisible={setModalSenhaVisivel}
+        />
+        <ModalChooseOrSendPhoto 
+          visible={modalPhotoVisible}
+          setModalVisible={setModalPhotoVisible}
+          callbackBeforeChooseImage={callbackBeforeChooseImage}
+          callbackAfterChooseImage={callbackAfterChooseImage}
         />
         <FlatList
             keyExtractor={this.keyExtractor}

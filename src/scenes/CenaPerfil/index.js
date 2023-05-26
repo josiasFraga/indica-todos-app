@@ -6,6 +6,8 @@ import GlobalStyle from "@styles/global";
 import { useDispatch, useSelector } from "react-redux";
 import MenusUsuario from './components/MenusUsuario';
 
+import CONFIG from '@constants/configs';
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function CenaPerfil(props) {
@@ -17,7 +19,7 @@ export default function CenaPerfil(props) {
   const userData = useSelector((state) => state.appReducer.user_data);
 
   const componentDidMount = async () => {
-    const authToken = await AsyncStorage.getItem("bearerToken");
+  const authToken = await AsyncStorage.getItem("bearerToken");
 	const userType = await AsyncStorage.getItem('userType');
 
     if ( userType != null ) {
@@ -63,7 +65,10 @@ export default function CenaPerfil(props) {
             <Avatar
               rounded
               title={userData.name[0]}
-              source={null}
+              source={userData.photo ? {
+                uri:
+                CONFIG.baseUrl + '/' + userData.photo,
+              } : null}
               size="large"
               containerStyle={{ borderWidth: 2, borderColor: "#FFF" }}
             />
