@@ -1,6 +1,5 @@
 import React from 'react';
 import { StyleSheet, View, ScrollView } from 'react-native';
-import { Button, Text, Image } from 'react-native-elements';
 import { useFormik } from 'formik';
 import COLORS from '@constants/colors';
 import FormCadastroPrestador from '@components/Forms/FormCadastroPrestador';

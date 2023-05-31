@@ -109,7 +109,7 @@ function* login({payload}) {
 			yield AsyncStorage.setItem('servicesExist', response.data.services_exist);
 			yield AsyncStorage.setItem('bearerTokenValidade', String(response.data.validation));
 
-			yield payload.callback_success();
+			yield payload.callback_success(response.data.type == 'servide_provider' && response.data.services_exist == '0');
 
 		} else {
 			AlertHelper.show('error', 'Erro', response.data.message);
@@ -123,7 +123,7 @@ function* login({payload}) {
 
 	} catch ({message, response}) {
 
-		if ( response.status == 401 ) {
+		if ( response.status && response.status == 401 ) {
 
 			AlertHelper.show('error', 'Erro', 'Login e/ou senha inválidos!');
 			yield put({
@@ -325,6 +325,70 @@ function* loadServiceCategories({payload}) {
 			console.warn('[ERROR : LOAD SERVICE CATEGORIES]', {message, response});
 			yield put({
 				type: 'LOAD_SERVICE_CATEGORIES_FAILED',
+				payload: {},
+			});
+			yield AlertHelper.show('error', 'Erro', message);
+			
+		}
+	}
+
+}
+
+function* loadServiceSubCategories({payload}) {
+
+	console.log('carregando subcategorias');
+
+	const networkStatus = yield NetInfo.fetch();
+
+	if ( !networkStatus.isConnected ) {
+		yield AlertHelper.show(
+			'warn',
+			'Sem conexão',
+			'Sem conexão com a internet.',
+		  );
+		  return true;
+
+	}
+
+	try {
+		const response = yield call(callApi, {
+			endpoint: CONFIG.url + '/service-subcategories/index.json',
+			method: 'GET',
+			params: payload
+		});
+
+		if (response.status == 200) {
+			if (response.data.status == 'ok') {
+				yield put({
+					type: 'LOAD_SERVICE_SUBCATEGORIES_SUCCESS',
+					payload: response.data.data,
+				});
+	
+			} else {
+				yield AlertHelper.show('error', 'Erro', response.data.msg);
+				yield put({
+					type: 'LOAD_SERVICE_SUBCATEGORIES_FAILED',
+					payload: {},
+				});
+	
+			}
+		} else {
+			yield AlertHelper.show('error', 'Erro', response.data.message);
+			yield put({
+				type: 'LOAD_SERVICE_SUBCATEGORIES_FAILED',
+				payload: {},
+			});
+
+		}
+
+	} catch ({message, response}) {
+		console.log(response);
+		if (response.data && response.data.code == 401) {
+			yield logout({payload: {}});
+		} else {
+			console.warn('[ERROR : LOAD SERVICE SUBCATEGORIES]', {message, response});
+			yield put({
+				type: 'LOAD_SERVICE_SUBCATEGORIES_FAILED',
 				payload: {},
 			});
 			yield AlertHelper.show('error', 'Erro', message);
@@ -634,16 +698,82 @@ function* saveProfilePhoto({payload}) {
 	}
 }
 
+function* loadMeasurementUnits({payload}) {
+
+	console.log('carregando unidades de medida');
+
+	const networkStatus = yield NetInfo.fetch();
+
+	if ( !networkStatus.isConnected ) {
+		yield AlertHelper.show(
+			'warn',
+			'Sem conexão',
+			'Sem conexão com a internet.',
+		  );
+		  return true;
+
+	}
+
+	try {
+		const response = yield call(callApi, {
+			endpoint: CONFIG.url + '/measurement-units/index.json',
+			method: 'GET',
+			params: payload
+		});
+
+		if (response.status == 200) {
+			if (response.data.status == 'ok') {
+				yield put({
+					type: 'LOAD_MEASUREMENT_UNITS_SUCCESS',
+					payload: response.data.data,
+				});
+	
+			} else {
+				yield AlertHelper.show('error', 'Erro', response.data.msg);
+				yield put({
+					type: 'LOAD_MEASUREMENT_UNITS_FAILED',
+					payload: {},
+				});
+	
+			}
+		} else {
+			yield AlertHelper.show('error', 'Erro', response.data.message);
+			yield put({
+				type: 'LOAD_MEASUREMENT_UNITS_FAILED',
+				payload: {},
+			});
+
+		}
+
+	} catch ({message, response}) {
+		console.log(response);
+		if (response.data && response.data.code == 401) {
+			yield logout({payload: {}});
+		} else {
+			console.warn('[ERROR : LOAD MEASUREMENT UNITS]', {message, response});
+			yield put({
+				type: 'LOAD_MEASUREMENT_UNITS_FAILED',
+				payload: {},
+			});
+			yield AlertHelper.show('error', 'Erro', message);
+			
+		}
+	}
+
+}
+
 export default function* () {
 	yield takeLatest('REGISTER_TRIGGER', registerTrigger);
 	yield takeLatest('LOGIN_TRIGGER', login);
 	yield takeLatest('SAVE_USER_LOCATION',	saveUserLocation);
 	yield takeLatest('LOAD_USER_LOCATION',	loadUserLocation);
 	yield takeLatest('LOAD_SERVICE_CATEGORIES',	loadServiceCategories);
+	yield takeLatest('LOAD_SERVICE_SUBCATEGORIES',	loadServiceSubCategories);
 	yield takeLatest('LOAD_SERVICE_PROVIDERS',	loadServiceProviders);
 	yield takeLatest('SAVE_VISIT',	saveVisit);
 	yield takeLatest('LOAD_USER_DATA',	loadUserData);
 	yield takeLatest('CHANGE_PASSWORD',	changePassword);
 	yield takeLatest('SAVE_PROFILE_PHOTO',	saveProfilePhoto);
 	yield takeLatest('LOGOUT',	logout);
+	yield takeLatest('LOAD_MEASUREMENT_UNITS',	loadMeasurementUnits);
 }

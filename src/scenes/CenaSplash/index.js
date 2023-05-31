@@ -5,7 +5,6 @@ import {
 	Image,
 	StatusBar
 } from 'react-native';
-import { useDispatch } from 'react-redux';
 import { CommonActions } from '@react-navigation/native';
 import IMAGES from '@constants/images';
 import NetInfo from "@react-native-community/netinfo";
@@ -13,12 +12,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import COLORS from '@constants/colors';
 
 function CenaSplash (props) {
-	const dispatch = useDispatch();
 
 	const componentDidMount = async () => {
 
 		const authToken = await AsyncStorage.getItem('bearerToken');
 		const userType = await AsyncStorage.getItem('userType');
+		const servicesExist = await AsyncStorage.getItem('servicesExist');
 
 		const networkStatus = await NetInfo.fetch();
 		if (!networkStatus.isConnected) {
@@ -48,13 +47,19 @@ function CenaSplash (props) {
 				// Verifique se o token existe e ainda é válido
 				if (token && validade && Date.now() < (parseInt(validade) * 1000)) {
 	
-					// O token é válido, redirecione para a tela principal	
+					// O token é válido, redirecione para a tela principal
+					let redirectToScene = 'TabsScreenUser';
+					if ( userType == 'servide_provider' && servicesExist == '0' ) {
+						redirectToScene = 'EmpresaPreDadosComplementares';
+					} else if ( userType == 'servide_provider' && servicesExist != '0' ) {
+						redirectToScene = 'TabsScreenProvider';
+					}
 					setTimeout(() => {
 						props.navigation.dispatch(
 						CommonActions.reset({
 							index: 1,
 							routes: [
-							{ name: userType == 'servide_provider' ? 'TabsScreenProvider' : 'TabsScreenUser' },
+							{ name:  redirectToScene },
 							],
 						})
 						)

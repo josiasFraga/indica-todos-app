@@ -33,6 +33,18 @@ export default function Login(props) {
       )
   }
 
+  openPreComplementDataCene = async () => {
+  
+    props.navigation.dispatch(
+      CommonActions.reset({
+        index: 1,
+        routes: [
+        { name: 'EmpresaPreDadosComplementares' },
+        ],
+      })
+      )
+  }
+
   const formik = useFormik({
     initialValues: { email: '', password: '' },
     validationSchema: LoginSchema,
@@ -43,9 +55,13 @@ export default function Login(props) {
         payload: {
           submitValues: values,
           setSubmitting: setSubmitting,
-          callback_success: () => {
+          callback_success: (service_provider_complement_data) => {
             resetForm()
-            openHomeCene();
+            if ( service_provider_complement_data ) {
+              openPreComplementDataCene();
+            } else {
+              openHomeCene();
+            }
           }
         }
       })

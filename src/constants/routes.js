@@ -9,6 +9,8 @@ import CenaPreLogin from '@scenes/CenaPreLogin';
 import CenaPreCadastro from '@scenes/CenaPreCadastro';
 import CenaLogin from '@scenes/CenaLogin';
 import CenaSplash from '@scenes/CenaSplash';
+import CenaEmpresaPreDadosComplementares from '@scenes/CenaEmpresaPreDadosComplementares';
+import CenaEmpresaDadosComplementares from '@scenes/CenaEmpresaDadosComplementares';
 import CenaCadastroPrestadores from '@scenes/CenaCadastroPrestadores';
 import CenaCadastroUsuarios from '@scenes/CenaCadastroUsuarios';
 import CenaSelecionaLocalizacao from '@scenes/CenaSelecionaLocalizacao';
@@ -118,13 +120,15 @@ export default function Routes(props){
         <Stack.Screen name="PreCadastro" component={CenaPreCadastro} />
         <Stack.Screen name="Login" component={CenaLogin} />
 
+        <Stack.Screen name="EmpresaPreDadosComplementares" component={CenaEmpresaPreDadosComplementares} />
+        <Stack.Screen name="EmpresaDadosComplementares" component={CenaEmpresaDadosComplementares} />
+
         <Stack.Screen name="TabsScreenProvider" component={AppTabsScreenProvider} />
         <Stack.Screen name="TabsScreenUser" component={AppTabsScreenUser} />
 
         <Stack.Screen name="ListaPrestadores" component={CenaListaPrestadores} />
 
         <Stack.Screen name="PrestadorDetalhe" component={CenaPrestadorDetalhe} />
-
 
         <Stack.Group screenOptions={{ presentation: 'modal' }}>
           <Stack.Screen name="SelecionaLocalizacao" component={CenaSelecionaLocalizacao} />

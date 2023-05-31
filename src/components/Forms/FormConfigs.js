@@ -4,17 +4,16 @@
 
  import { CheckBox } from 'react-native-elements'
 
- import { TextInput, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+ import {  View, Text, StyleSheet, TouchableOpacity } from 'react-native';
  import AsyncStorage from '@react-native-async-storage/async-storage';
 
  import { Formik } from 'formik';
  import GlobalStyle from '@styles/global';
  import AlertHelper from '@components/Alert/AlertHelper';
-import { useDispatch } from 'react-redux';
 
  export const FormConfigs = (props) => {
 
-    const dispatch = useDispatch();
+
     const [tipoLeitura, setTipoLeitura] = useState("camera");
 
     const getSettings = async () => {

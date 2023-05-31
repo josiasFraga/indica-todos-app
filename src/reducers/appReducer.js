@@ -12,6 +12,10 @@ const INITIAL_STATE = {
   phone: ""
  },
  user_data_loading: false,
+ service_subcategories: [],
+ service_subcategories_loading: false,
+ service_measurement_units: [],
+ service_measurement_units_loading: false
 };
 
 export const appReducer = (state = INITIAL_STATE, action) => {
@@ -37,6 +41,20 @@ export const appReducer = (state = INITIAL_STATE, action) => {
 		return {...state, service_categories: action.payload, service_categories_loading: false };
     case 'LOAD_SERVICE_CATEGORIES_FAILED':
 		return {...state, service_categories_loading: false};
+  
+    case 'LOAD_SERVICE_SUBCATEGORIES':
+		return {...state, service_subcategories_loading: true};
+    case 'LOAD_SERVICE_SUBCATEGORIES_SUCCESS':
+		return {...state, service_subcategories: action.payload, service_subcategories_loading: false };
+    case 'LOAD_SERVICE_SUBCATEGORIES_FAILED':
+		return {...state, service_subcategories_loading: false};
+  
+    case 'LOAD_MEASUREMENT_UNITS':
+		return {...state, service_measurement_units_loading: true};
+    case 'LOAD_MEASUREMENT_UNITS_SUCCESS':
+		return {...state, service_measurement_units: action.payload, service_measurement_units_loading: false };
+    case 'LOAD_MEASUREMENT_UNITS_FAILED':
+		return {...state, service_measurement_units_loading: false};
   
     case 'LOAD_SERVICE_PROVIDERS':
 		return {...state, service_providers_loading: true};
