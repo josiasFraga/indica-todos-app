@@ -6,6 +6,13 @@ import COLORS from '@constants/colors';
 export default function FormCadastroUsuario(props) {
   const formik = props.formik;
 
+  const maskPhone = (text) => {
+    let x = text.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
+    let retorno = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
+
+    return retorno;
+  }
+
   return (
     <>
     <View>
@@ -24,7 +31,10 @@ export default function FormCadastroUsuario(props) {
         <Input
             label="Telefone"
             leftIcon={<Icon name="phone" size={24} color={COLORS.secondary} type='antdesign' />}
-            onChangeText={formik.handleChange('phone')}
+            onChangeText={(value) => {
+                const telefone_formatado = maskPhone(value);
+                formik.setFieldValue('phone', telefone_formatado)
+            }}
             onBlur={formik.handleBlur('phone')}
             value={formik.values.phone}
             errorMessage={formik.touched.phone && formik.errors.phone}

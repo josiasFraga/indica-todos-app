@@ -19,6 +19,13 @@ export default function FormCadastroPrestador(props) {
     return retorno;
   }
 
+  const maskPhone = (text) => {
+    let x = text.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
+    let retorno = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
+
+    return retorno;
+  }
+
   const fetchData = async (cep) => {
     setLoading(true);
     try {
@@ -79,7 +86,10 @@ export default function FormCadastroPrestador(props) {
         <Input
             label="Telefone"
             leftIcon={<Icon name="phone" size={24} color={COLORS.secondary} />}
-            onChangeText={formik.handleChange('phone')}
+            onChangeText={(value) => {
+                const telefone_formatado = maskPhone(value);
+                formik.setFieldValue('phone', telefone_formatado)
+            }}
             onBlur={formik.handleBlur('phone')}
             value={formik.values.phone}
             errorMessage={formik.touched.phone && formik.errors.phone}

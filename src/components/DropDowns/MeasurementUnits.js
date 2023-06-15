@@ -42,7 +42,7 @@ export default function Category(props) {
         <DropDownPicker
             open={open}
             value={props.value}
-            items={measurement_units.map((unit) => ({label: unit.titulo, value: unit.id}))}
+            items={measurement_units.map((unit) => ({label: unit.titulo, value: unit.titulo}))}
             setOpen={setOpen}
             setValue={setValue}
             //setItems={setStates}

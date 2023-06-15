@@ -144,6 +144,62 @@ function* login({payload}) {
 	}
 }
 
+function* endRegisterTrigger({payload}) {
+
+	const networkStatus = yield NetInfo.fetch();
+	
+	if ( !networkStatus.isConnected ) {
+		yield AlertHelper.show(
+			'warn',
+			'Sem conexão',
+			'Você só pode finalizar um cadastro quando estiver com conexão a internet.',
+		  );
+		  return true;
+	}
+
+	//const notifications_id = yield JSON.parse(yield AsyncStorage.getItem('oneSignalToken'))?.userId;
+
+	console.log('[SAGA] - FINALIZANDO CADASTRO DO PRESTADOR');
+	console.log(payload.submitValues);
+	
+	let data = new FormData();
+	let dados = payload.submitValues;
+	//dados.notificacao_token = notifications_id;
+
+	data.append('dados', JSON.stringify(dados));
+
+	try {
+		const response = yield call(callApi, { 
+			endpoint: CONFIG.url+'/users/end_provider_register.json',
+			method: 'POST',
+			data: data,
+			headers: {
+				'content-type': 'multipart/form-data',
+			},
+		});
+
+		console.log('[SAGA] - [CADASTRANDO PRESTADOR]', response);
+
+		if ( response.data.status == 'ok' ) {
+			yield payload.callback_success();
+		} else {
+			if ( response.data.error && response.data.error.email ) {
+				yield AlertHelper.show('warning', 'Atenção',  'O email que você está tentando cadastrar já está sendo usado por outro usuário.');
+
+			} else {
+
+				yield AlertHelper.show('error', 'Erro',  response.data.msg);
+			}
+		}
+		yield payload.setSubmitting(false);
+
+	} catch ({message, response}) {
+		console.error('[SAGA] - [CADASTRANDO PRESTADOR]', { message, response });
+		yield AlertHelper.show('error', 'Erro', message);
+		yield payload.setSubmitting(false);
+	}
+}
+
 function* loadUserLocation({payload}) {
 
 	console.log('carregando localização do usuário');
@@ -776,4 +832,6 @@ export default function* () {
 	yield takeLatest('SAVE_PROFILE_PHOTO',	saveProfilePhoto);
 	yield takeLatest('LOGOUT',	logout);
 	yield takeLatest('LOAD_MEASUREMENT_UNITS',	loadMeasurementUnits);
+	yield takeLatest('END_REGISTER_TRIGGER',	endRegisterTrigger);
+	
 }
