@@ -34,8 +34,11 @@ export default function Category(props) {
 
   React.useEffect(() => {
 
-    formik.setFieldValue(fieldName, value);
+    if ( value != '' ) {
+      formik.setFieldValue(fieldName, value);
+    }
   }, [value]);
+
 
   return (
     <View style={{paddingHorizontal: 7}}>

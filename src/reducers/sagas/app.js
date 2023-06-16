@@ -1001,6 +1001,127 @@ function* saveBusinessData({payload}) {
 	}
 }
 
+function* loadServices({payload}) {
+
+	console.log('carregando serviços');
+
+	const networkStatus = yield NetInfo.fetch();
+
+	if ( !networkStatus.isConnected ) {
+		yield AlertHelper.show(
+			'warn',
+			'Sem conexão',
+			'Sem conexão com a internet.',
+		  );
+		  return true;
+
+	}
+
+	try {
+		const response = yield call(callApi, {
+			endpoint: CONFIG.url + '/services/index.json',
+			method: 'GET',
+			params: payload
+		});
+
+		if (response.status == 200) {
+			if (response.data.status == 'ok') {
+				yield put({
+					type: 'LOAD_SERVICES_SUCCESS',
+					payload: response.data.data,
+				});
+	
+			} else {
+				yield AlertHelper.show('error', 'Erro', response.data.msg);
+				yield put({
+					type: 'LOAD_SERVICES_FAILED',
+					payload: {},
+				});
+	
+			}
+		} else {
+			yield AlertHelper.show('error', 'Erro', response.data.message);
+			yield put({
+				type: 'LOAD_SERVICES_FAILED',
+				payload: {},
+			});
+
+		}
+
+	} catch ({message, response}) {
+		console.log(response);
+		if (response.data && response.data.code == 401) {
+			yield logout({payload: {}});
+		} else {
+			console.warn('[ERROR : LOAD SERVICES]', {message, response});
+			yield put({
+				type: 'LOAD_SERVICES_FAILED',
+				payload: {},
+			});
+			yield AlertHelper.show('error', 'Erro', message);
+			
+		}
+	}
+
+}
+
+function* saveServices({payload}) {
+
+	const networkStatus = yield NetInfo.fetch();
+	
+	if ( !networkStatus.isConnected ) {
+		yield AlertHelper.show(
+			'warn',
+			'Sem conexão',
+			'Você está sem conexão com a internet.',
+		  );
+		  return true;
+	}
+
+	console.log('[SAGA] - SALVANDO SERVIÇOS');
+	console.log(payload);
+	
+	let data = new FormData();
+	let dados = payload.submitValues;
+
+	data.append('dados', JSON.stringify(dados));
+
+	try {
+		const response = yield call(callApi, { 
+			endpoint: CONFIG.url+'/services/save-data.json',
+			method: 'POST',
+			data: data,
+			headers: {
+				'content-type': 'multipart/form-data',
+			},
+		});
+
+		console.log('[SAGA] - [SALVANDO SERVIÇOS]', response);
+
+		if ( response.data.status == 'ok' ) {
+			yield AlertHelper.show('success', 'Tudo Certo',  response.data.message);
+
+			yield payload.callback_success();
+		} else {
+
+			yield AlertHelper.show('error', 'Erro',  response.data.message);
+		}
+
+		payload.setSubmitting(false);
+
+	} catch ({message, response}) {
+		if (response.data && response.data.code == 401) {
+			yield logout({payload: {}});
+		} else {
+			console.error('[SAGA] - [SALVANDO SERVIÇOS]', { message, response });
+			yield AlertHelper.show('error', 'Erro', message);
+			
+		}
+
+		payload.setSubmitting(false);
+	}
+}
+
 export default function* () {
 	yield takeLatest('REGISTER_TRIGGER', registerTrigger);
 	yield takeLatest('LOGIN_TRIGGER', login);
@@ -1019,5 +1140,7 @@ export default function* () {
 	yield takeLatest('END_REGISTER_TRIGGER',	endRegisterTrigger);
 	yield takeLatest('LOAD_BUSINESS_DATA',	loadBusinessData);
 	yield takeLatest('SAVE_BUSINESS_DATA',	saveBusinessData);
+	yield takeLatest('LOAD_SERVICES',	loadServices);
+	yield takeLatest('SAVE_SERVICES',	saveServices);
 	
 }

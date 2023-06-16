@@ -39,7 +39,9 @@ export default function City(props) {
 
   React.useEffect(() => {
 
-    formik.setFieldValue(fieldName, value);
+    if ( value != '' ) {
+      formik.setFieldValue(fieldName, value);
+    }
   }, [value]);
 
   return (

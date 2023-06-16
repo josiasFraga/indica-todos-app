@@ -17,6 +17,15 @@ export default function MenusPrestador () {
         );
     }
 
+    const goToServices = () => {
+
+        navigation.dispatch(
+            CommonActions.navigate({
+                name: 'AlterarServicos'
+            })
+        );
+    }
+
     const list = [
 
         {
@@ -25,6 +34,15 @@ export default function MenusPrestador () {
           loading: false,
           onPress: () => {
             goToChangeDada();
+          }
+        },
+
+        {
+          name: 'Alterar Serviços',
+          subtitle: '',
+          loading: false,
+          onPress: () => {
+            goToServices();
           }
         },
     ];

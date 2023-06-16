@@ -75,8 +75,9 @@ export default function FormPrestadorServicos(props) {
     <View>
         <Text style={styles.sectionLabel}>Serviços Prestados</Text>
 
-        {formik.values.services.map((service, index) => (
-        <View key={index} style={styles.fieldsetContainer}>
+        {formik.values.services.map((service, index) => {
+        return (
+          <View key={index} style={styles.fieldsetContainer}>
             <Input
                 name={`services.${index}.title`}
                 placeholder='Digite o nome do serviço prestado'
@@ -107,7 +108,7 @@ export default function FormPrestadorServicos(props) {
             <Category 
                 formik={formik} 
                 fieldName={`services.${index}.category_id`}
-                value={formik.values.services[index].category_id}
+                value={service.category_id}
                 touched={formik.touched.services?.[index]?.category_id}  
                 error={formik.errors.services?.[index]?.category_id}
             />
@@ -161,8 +162,9 @@ export default function FormPrestadorServicos(props) {
                 buttonStyle={{paddingVertical: 5, backgroundColor: COLORS.primary, marginBottom: 15}}
                 onPress={() => handleRemoveService(index)}
             />
-        </View>
-      ))}
+          </View>
+        )
+        })}
 
      <View style={{alignItems: 'flex-end', marginBottom: 50}}>
         <Button 
