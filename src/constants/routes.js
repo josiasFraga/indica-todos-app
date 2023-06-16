@@ -5,6 +5,7 @@ import { Icon } from 'react-native-elements';
 import COLORS from '@constants/colors';
 
 import CenaHome from '@scenes/CenaHome';
+import CenaHomeProvider from '@scenes/CenaHomeProvider';
 import CenaPreLogin from '@scenes/CenaPreLogin';
 import CenaPreCadastro from '@scenes/CenaPreCadastro';
 import CenaLogin from '@scenes/CenaLogin';
@@ -17,6 +18,8 @@ import CenaSelecionaLocalizacao from '@scenes/CenaSelecionaLocalizacao';
 import CenaListaPrestadores from '@scenes/CenaListaPrestadores';
 import CenaPrestadorDetalhe from '@scenes/CenaPrestadorDetalhe';
 import CenaPerfil from '@scenes/CenaPerfil';
+import CenaAlterarDadosPrestador from '@scenes/CenaAlterarDadosPrestador';
+
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
@@ -36,7 +39,7 @@ export default function Routes(props){
       }}>
         <AppTabs.Screen 
           name="Home" 
-          component={CenaHome}
+          component={CenaHomeProvider}
           options={{
             tabBarActiveTintColor: COLORS.primary,
             tabBarInactiveTintColor: '#CCC',
@@ -129,6 +132,8 @@ export default function Routes(props){
         <Stack.Screen name="ListaPrestadores" component={CenaListaPrestadores} />
 
         <Stack.Screen name="PrestadorDetalhe" component={CenaPrestadorDetalhe} />
+
+        <Stack.Screen name="AlterarDadosPrestador" component={CenaAlterarDadosPrestador} />
 
         <Stack.Group screenOptions={{ presentation: 'modal' }}>
           <Stack.Screen name="SelecionaLocalizacao" component={CenaSelecionaLocalizacao} />

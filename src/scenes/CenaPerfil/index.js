@@ -1,10 +1,11 @@
 import React from "react";
 
-import { StyleSheet, View, Image, StatusBar } from "react-native";
+import { StyleSheet, View, Image, StatusBar, ScrollView } from "react-native";
 import { Avatar, Text } from "react-native-elements";
 import GlobalStyle from "@styles/global";
 import { useDispatch, useSelector } from "react-redux";
 import MenusUsuario from './components/MenusUsuario';
+import MenusPrestador from './components/MenusPrestador';
 
 import CONFIG from '@constants/configs';
 
@@ -85,13 +86,22 @@ export default function CenaPerfil(props) {
 
         <View style={GlobalStyle.spaceMedium} />
 
-        <View style={[GlobalStyle.secureMargin, styles.container]}>
+        <ScrollView style={[GlobalStyle.secureMargin, styles.container]}>
           <Text style={GlobalStyle.title2}>Perfil</Text>
 
           <View style={GlobalStyle.spaceSmall} />
 
           <MenusUsuario />
-        </View>
+      
+          <View style={GlobalStyle.spaceMedium} />
+
+          {userType == 'servide_provider' && 
+          <>          
+            <Text style={GlobalStyle.title2}>Empresa</Text>
+            <MenusPrestador />
+          </>
+          }
+        </ScrollView>
       </View>
     </View>
   );

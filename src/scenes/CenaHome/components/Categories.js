@@ -19,7 +19,7 @@ function Categories (props) {
     const user_location = useSelector(state => state.appReducer.user_location);
 
     const buscaItens = () => {
-            
+
         dispatch({
             type: 'LOAD_SERVICE_CATEGORIES',
             payload: {

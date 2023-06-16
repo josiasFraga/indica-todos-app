@@ -22,7 +22,7 @@ export default function MenusUsuario () {
           type: 'LOGOUT',
           payload: {
               callbackSuccess: () => {
-                  
+
                   navigation.dispatch(
                       CommonActions.reset({
                           index: 1,
@@ -95,19 +95,14 @@ export default function MenusUsuario () {
           callbackBeforeChooseImage={callbackBeforeChooseImage}
           callbackAfterChooseImage={callbackAfterChooseImage}
         />
-        <FlatList
-            keyExtractor={this.keyExtractor}
-            data={list}
-            renderItem={({ item, index, separators }) => 
-              <MenuItem 
+        {list.map((item,index)=>{
+          return(
+            <MenuItem 
               item={item} key={"menu_item_" + index}
-              />
-            }
-            showsHorizontalScrollIndicator={false}
-            showsVerticalScrollIndicator={false}
-            scrollEnabled
-            style={{flex: 1}}
-        />
+            />
+          )
+        })}
+
       </>
     );
 }

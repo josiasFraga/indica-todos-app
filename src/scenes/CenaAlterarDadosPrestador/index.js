@@ -1,23 +1,17 @@
 import React from 'react';
-import { StyleSheet, View, ScrollView } from 'react-native';
+import { StyleSheet, View, StatusBar, ScrollView } from 'react-native';
+import { Button } from 'react-native-elements';
 import { useFormik } from 'formik';
+import { StackActions, useNavigation } from '@react-navigation/native';
 import COLORS from '@constants/colors';
-import FormCadastroPrestador from '@components/Forms/FormCadastroPrestador';
+import GlobalStyle from '@styles/global';
+
 import * as yup from 'yup';
 import Header from "@components/Header";
-import { CommonActions } from '@react-navigation/native';
-import GlobalStyle from '@styles/global';
-import { useDispatch } from 'react-redux';
-import AlertHelper from '@components/Alert/AlertHelper';
+import { useDispatch, useSelector } from 'react-redux';
+import DadosEmpresa from '@components/Forms/FormCadastroPrestador/DadosEmpresa';
 
-const cadastroSchema = yup.object().shape({
-    name: yup.string().required('Nome é obrigatório'),
-    email: yup.string().email('Digite um e-mail válido').required('E-mail é obrigatório'),
-    password: yup.string().required('Senha é obrigatória'),
-    confirmPassword: yup.string()
-    .oneOf([yup.ref('password'), null], 'As senhas não coincidem')
-    .required('A confirmação de senha é obrigatória'),
-    phone: yup.string().required('Telefone é obrigatório'),
+const validation = yup.object().shape({
     service_provider: yup.object().shape({
       name: yup.string().required('Nome do prestador é obrigatório'),
       email: yup.string().email('Digite um e-mail válido').required('E-mail do prestador é obrigatório'),
@@ -40,87 +34,96 @@ const cadastroSchema = yup.object().shape({
     })
 });
 
-export default function CenaCadastroPrestadores(props) {
+export default function CenaAlterarDadosPrestador(props) {
 
   const dispatch = useDispatch();
+  const navigation = useNavigation();
+  const data_loaded = useSelector(state => state.appReducer.business_data);
+  const [initialValues, setInitialValues] = React.useState({ 
+    service_provider: {
+        name: '',
+        email: '',
+        phone: '',
+        address: '',
+        address_number: '',
+        address_complement: '',
+        city: '',
+        state: '',
+        neighborhood: '',
+        postal_code: ''
+    }
+  });
 
-  openLoginCene = () => {
-		props.navigation.dispatch(
-			CommonActions.navigate({
-				name: 'Login'
-			})
-		);
-  }
+  React.useEffect(() => {
+
+    dispatch({
+        type: 'LOAD_BUSINESS_DATA',
+        payload: {}
+      })
+  },[])
+
+  React.useEffect(() => {
+    if (Object.keys(data_loaded).length > 0) {
+        setInitialValues({
+            service_provider: data_loaded
+        });
+    }
+  },[data_loaded])
 
   const formik = useFormik({
-    initialValues: { 
-        name: '', 
-        email: '', 
-        password: '', 
-        phone: '', 
-        service_provider: {
-            name: '',
-            email: '',
-            phone: '',
-            address: '',
-            address_number: '',
-            address_complement: '',
-            city: '',
-            state: '',
-            postal_code: '',
-            neighborhood: ''
-            /*services: [
-                {
-                    title: '',
-                    description: '',
-                    category_id: '',
-                    subcategory_id: '',
-                    price: '',
-                    price_unit: ''
-                }
-            ]*/
-        }
-    },
-    validationSchema: cadastroSchema,
+    enableReinitialize: true,
+    initialValues: initialValues,
+    validationSchema: validation,
     onSubmit: (values, {setSubmitting, resetForm}) => {
-      
+
       dispatch({
-        type: 'REGISTER_TRIGGER',
+        type: 'SAVE_BUSINESS_DATA',
         payload: {
           submitValues: values,
           setSubmitting: setSubmitting,
           callback_success: () => {
-            resetForm()
-            AlertHelper.show(
-              'success',
-              'Tudo Certo',
-              'Seu cadastro foi realizado com sucesso!',
-            );
-            openLoginCene();
+            navigation.dispatch(StackActions.pop(1)); 
           }
         }
       })
     },
   });
 
+
   return (
     <>
-    
-    <Header
-        backButton
-        titulo="Cadastro de Prestador"
-        styles={{ backgroundColor: "transparent" }}
-        titleStyle={{ color: COLORS.primary }}
-        iconColor={COLORS.primary}
-    />
-
     <View style={styles.container}>
+        
+        <StatusBar
+            translucent={true}
+            backgroundColor={'transparent'}
+            barStyle={'light-content'}
+        />
+
+        <Header
+            titulo="Alterar Dados Empresariais"
+            styles={{ backgroundColor: COLORS.primary }}
+            titleStyle={{ color: '#f7f7f7' }}
+            backButton
+            iconColor={'#f7f7f7'}
+        />
+
         <ScrollView style={styles.scrollView}>
-            <View style={GlobalStyle.spaceSmall}>
+            <View style={GlobalStyle.spaceSmall} />
+            <View style={GlobalStyle.secureMargin}>
+                <DadosEmpresa formik={formik} />
+
+                <View style={GlobalStyle.spaceSmall} />
+
+                <Button
+                    titleStyle={{}}
+                    buttonStyle={{borderRadius: 25, paddingVertical: 10, backgroundColor: COLORS.primary, marginBottom: 15}}
+                    title="Salvar Alterações"
+                    onPress={formik.handleSubmit}
+                    disabled={formik.isSubmitting}
+                />
             </View>
-            <View style={styles.innerContainer}>
-                <FormCadastroPrestador formik={formik} />
-            </View>
+            <View style={GlobalStyle.spaceSmall} />
         </ScrollView>
     </View>
     </>

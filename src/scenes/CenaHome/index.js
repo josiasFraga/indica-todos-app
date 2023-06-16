@@ -4,15 +4,11 @@ import {
 	View,
 	StatusBar,
 } from 'react-native';
-import {Button, Text, Icon, Image } from 'react-native-elements';
-import { CommonActions } from '@react-navigation/native';
-import GlobalStyle from '@styles/global';
 import { getUniqueId } from 'react-native-device-info';
 import Header from "@components/Header";
 import UserLocation from "@components/UserLocation";
 import Categories from "./components/Categories";
 
-import IMAGES from '@constants/images';
 import COLORS from '@constants/colors';
 
 type Props = {};

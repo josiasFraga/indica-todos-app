@@ -15,7 +15,16 @@ const INITIAL_STATE = {
  service_subcategories: [],
  service_subcategories_loading: false,
  service_measurement_units: [],
- service_measurement_units_loading: false
+ service_measurement_units_loading: false,
+ dashboard_data: {
+  "visits": 0,
+  "visits_uniqes": 0,
+  "phone_clicks": 0,
+  "week_avg": 0
+ },
+ is_dashboard_data_loading: false,
+ business_data: {},
+ is_business_data_loading: false
 };
 
 export const appReducer = (state = INITIAL_STATE, action) => {
@@ -69,6 +78,20 @@ export const appReducer = (state = INITIAL_STATE, action) => {
 		return {...state, user_data: action.payload, user_data_loading: false };
     case 'LOAD_USER_DATA_FAILED':
 		return {...state, user_data_loading: false};
+  
+    case 'LOAD_DASHBOARD_DATA':
+		return {...state, is_dashboard_data_loading: true};
+    case 'LOAD_DASHBOARD_DATA_SUCCESS':
+		return {...state, dashboard_data: action.payload, is_dashboard_data_loading: false };
+    case 'LOAD_DASHBOARD_DATA_FAILED':
+		return {...state, is_dashboard_data_loading: false};
+  
+    case 'LOAD_BUSINESS_DATA':
+		return {...state, business_data: {}, is_business_data_loading: true};
+    case 'LOAD_BUSINESS_DATA_SUCCESS':
+		return {...state, business_data: action.payload, is_business_data_loading: false };
+    case 'LOAD_BUSINESS_DATA_FAILED':
+		return {...state, business_data: {}, is_business_data_loading: false};    
     
     default:
 		return state;

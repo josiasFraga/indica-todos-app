@@ -200,6 +200,68 @@ function* endRegisterTrigger({payload}) {
 	}
 }
 
+function* loadDashboardData({payload}) {
+
+	console.log('carregando dados da dashboard do prestador');
+
+	const networkStatus = yield NetInfo.fetch();
+
+	if ( !networkStatus.isConnected ) {
+		yield AlertHelper.show(
+			'warn',
+			'Sem conexão',
+			'Sem conexão com a internet.',
+		  );
+		  return true;
+	}
+	
+	try {
+		const response = yield call(callApi, {
+			endpoint: CONFIG.url + '/service-providers/dashboard.json',
+			method: 'GET',
+			//params: params
+		});
+
+		if (response.status == 200) {
+			if (response.data.status == 'ok') {
+				yield put({
+					type: 'LOAD_DASHBOARD_DATA_SUCCESS',
+					payload: response.data.data,
+				});
+	
+			} else {
+				yield AlertHelper.show('error', 'Erro', response.data.msg);
+				yield put({
+					type: 'LOAD_DASHBOARD_DATA_FAILED',
+					payload: {},
+				});
+	
+			}
+		} else {
+			yield AlertHelper.show('error', 'Erro', response.data.message);
+			yield put({
+				type: 'LOAD_DASHBOARD_DATA_FAILED',
+				payload: {},
+			});
+
+		}
+
+	} catch ({message, response}) {
+		if (response.data && response.data.code == 401) {
+			yield logout({payload: {}});
+		} else {
+			console.warn('[ERROR : LOAD DASHBOARD DATA]', {message, response});
+			yield put({
+				type: 'LOAD_DASHBOARD_DATA_FAILED',
+				payload: {},
+			});
+			yield AlertHelper.show('error', 'Erro', message);
+			
+		}
+	}
+
+}
+
 function* loadUserLocation({payload}) {
 
 	console.log('carregando localização do usuário');
@@ -818,9 +880,131 @@ function* loadMeasurementUnits({payload}) {
 
 }
 
+function* loadBusinessData({payload}) {
+
+	console.log('carregando dados empresariais');
+
+	const networkStatus = yield NetInfo.fetch();
+
+	if ( !networkStatus.isConnected ) {
+		yield AlertHelper.show(
+			'warn',
+			'Sem conexão',
+			'Sem conexão com a internet.',
+		  );
+		  return true;
+
+	}
+
+	try {
+		const response = yield call(callApi, {
+			endpoint: CONFIG.url + '/service-providers/load-data.json',
+			method: 'GET',
+			params: payload
+		});
+
+		if (response.status == 200) {
+			if (response.data.status == 'ok') {
+				yield put({
+					type: 'LOAD_BUSINESS_DATA_SUCCESS',
+					payload: response.data.data,
+				});
+	
+			} else {
+				yield AlertHelper.show('error', 'Erro', response.data.msg);
+				yield put({
+					type: 'LOAD_BUSINESS_DATA_FAILED',
+					payload: {},
+				});
+	
+			}
+		} else {
+			yield AlertHelper.show('error', 'Erro', response.data.message);
+			yield put({
+				type: 'LOAD_BUSINESS_DATA_FAILED',
+				payload: {},
+			});
+
+		}
+
+	} catch ({message, response}) {
+		console.log(response);
+		if (response.data && response.data.code == 401) {
+			yield logout({payload: {}});
+		} else {
+			console.warn('[ERROR : LOAD BUSINESS DATA]', {message, response});
+			yield put({
+				type: 'LOAD_BUSINESS_DATA_FAILED',
+				payload: {},
+			});
+			yield AlertHelper.show('error', 'Erro', message);
+			
+		}
+	}
+
+}
+
+function* saveBusinessData({payload}) {
+
+	const networkStatus = yield NetInfo.fetch();
+	
+	if ( !networkStatus.isConnected ) {
+		yield AlertHelper.show(
+			'warn',
+			'Sem conexão',
+			'Você está sem conexão com a internet.',
+		  );
+		  return true;
+	}
+
+	console.log('[SAGA] - SALVANDO DADOS DO PRESTADOR');
+	console.log(payload);
+	
+	let data = new FormData();
+	let dados = payload.submitValues;
+
+	data.append('dados', JSON.stringify(dados));
+
+	try {
+		const response = yield call(callApi, { 
+			endpoint: CONFIG.url+'/service-providers/save-data.json',
+			method: 'POST',
+			data: data,
+			headers: {
+				'content-type': 'multipart/form-data',
+			},
+		});
+
+		console.log('[SAGA] - [SALVANDO DADOS DO PRESTADOR]', response);
+
+		if ( response.data.status == 'ok' ) {
+			yield AlertHelper.show('success', 'Tudo Certo',  response.data.message);
+
+			yield payload.callback_success();
+		} else {
+
+			yield AlertHelper.show('error', 'Erro',  response.data.message);
+		}
+
+		payload.setSubmitting(false);
+
+	} catch ({message, response}) {
+		if (response.data && response.data.code == 401) {
+			yield logout({payload: {}});
+		} else {
+			console.error('[SAGA] - [SALVANDO DADOS DO PRESTADOR]', { message, response });
+			yield AlertHelper.show('error', 'Erro', message);
+			
+		}
+
+		payload.setSubmitting(false);
+	}
+}
+
 export default function* () {
 	yield takeLatest('REGISTER_TRIGGER', registerTrigger);
 	yield takeLatest('LOGIN_TRIGGER', login);
+	yield takeLatest('LOAD_DASHBOARD_DATA',	loadDashboardData);
 	yield takeLatest('SAVE_USER_LOCATION',	saveUserLocation);
 	yield takeLatest('LOAD_USER_LOCATION',	loadUserLocation);
 	yield takeLatest('LOAD_SERVICE_CATEGORIES',	loadServiceCategories);
@@ -833,5 +1017,7 @@ export default function* () {
 	yield takeLatest('LOGOUT',	logout);
 	yield takeLatest('LOAD_MEASUREMENT_UNITS',	loadMeasurementUnits);
 	yield takeLatest('END_REGISTER_TRIGGER',	endRegisterTrigger);
+	yield takeLatest('LOAD_BUSINESS_DATA',	loadBusinessData);
+	yield takeLatest('SAVE_BUSINESS_DATA',	saveBusinessData);
 	
 }
