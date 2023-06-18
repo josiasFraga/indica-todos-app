@@ -25,6 +25,8 @@ const INITIAL_STATE = {
  is_dashboard_data_loading: false,
  business_data: {},
  is_business_data_loading: false,
+ my_services: [],
+ is_my_services_loading: false,
  services: [],
  is_services_loading: false,
 };
@@ -95,12 +97,19 @@ export const appReducer = (state = INITIAL_STATE, action) => {
     case 'LOAD_BUSINESS_DATA_FAILED':
 		return {...state, business_data: {}, is_business_data_loading: false};
   
+    case 'LOAD_MY_SERVICES':
+		return {...state, my_services: [], is_my_services_loading: true};
+    case 'LOAD_MY_SERVICES_SUCCESS':
+		return {...state, my_services: action.payload, is_my_services_loading: false };
+    case 'LOAD_MY_SERVICES_FAILED':
+		return {...state, my_services: [], is_my_services_loading: false};
+
     case 'LOAD_SERVICES':
 		return {...state, services: [], is_services_loading: true};
     case 'LOAD_SERVICES_SUCCESS':
 		return {...state, services: action.payload, is_services_loading: false };
     case 'LOAD_SERVICES_FAILED':
-		return {...state, services: [], is_services_loading: false};  
+		return {...state, services: [], is_services_loading: false}; 
     
     default:
 		return state;

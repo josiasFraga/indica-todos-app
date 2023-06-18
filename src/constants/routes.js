@@ -20,6 +20,7 @@ import CenaPrestadorDetalhe from '@scenes/CenaPrestadorDetalhe';
 import CenaPerfil from '@scenes/CenaPerfil';
 import CenaAlterarDadosPrestador from '@scenes/CenaAlterarDadosPrestador';
 import CenaAlterarServicos from '@scenes/CenaAlterarServicos';
+import CenaAvaliarPrestador from '@scenes/CenaAvaliarPrestador';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
@@ -136,6 +137,8 @@ export default function Routes(props){
         <Stack.Screen name="AlterarDadosPrestador" component={CenaAlterarDadosPrestador} />
     
         <Stack.Screen name="AlterarServicos" component={CenaAlterarServicos} />
+    
+        <Stack.Screen name="AvaliarPrestador" component={CenaAvaliarPrestador} />
 
         <Stack.Group screenOptions={{ presentation: 'modal' }}>
           <Stack.Screen name="SelecionaLocalizacao" component={CenaSelecionaLocalizacao} />

@@ -91,7 +91,7 @@ export default function DadosEmpresa(props) {
             leftIcon={<Icon name="phone" size={24} color={COLORS.secondary} />}
             onChangeText={(value) => {
                 const telefone_formatado = maskPhone(value);
-                formik.setFieldValue('phone', telefone_formatado)
+                formik.setFieldValue('service_provider.phone', telefone_formatado)
             }}
             onBlur={formik.handleBlur('service_provider.phone')}
             value={formik.values.service_provider.phone}

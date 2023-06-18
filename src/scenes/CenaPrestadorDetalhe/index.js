@@ -5,10 +5,12 @@ import Header from "@components/Header";
 import COLORS from '@constants/colors';
 import { useDispatch } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { CommonActions, useNavigation } from '@react-navigation/native';
 
 export default function CenaPrestadorDetalhe (props) {
 
     const dispatch = useDispatch();
+    const navigation = useNavigation();
 
     const serviceProvider = props.route.params.item;
   
@@ -25,6 +27,17 @@ export default function CenaPrestadorDetalhe (props) {
               ]);
         }
     };
+
+    const openAvaliar = () => {
+        navigation.dispatch(
+			CommonActions.navigate({
+				name: 'AvaliarPrestador',
+                params: {
+                    service_provider_id: serviceProvider.id
+                }
+			})
+		);
+    }
 
     const salvaVisita = () => {
         dispatch({
@@ -104,6 +117,15 @@ export default function CenaPrestadorDetalhe (props) {
                 </ListItem.Content>
             </ListItem>
             ))}
+        </View>
+        <View style={{ paddingHorizontal: 16, paddingTop: 16 }}>
+            <Button
+                titleStyle={{}}
+                buttonStyle={{borderRadius: 25, paddingVertical: 10, backgroundColor: COLORS.primary, marginBottom: 15}}
+                title="Avaliar Prestador"
+                onPress={openAvaliar}
+                disabled={false}
+            />
         </View>
         </ScrollView>
         </View>

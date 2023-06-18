@@ -40,6 +40,7 @@ export default function FormCadastroPrestador(props) {
                 const telefone_formatado = maskPhone(value);
                 formik.setFieldValue('phone', telefone_formatado)
             }}
+            maxLength={15}
             onBlur={formik.handleBlur('phone')}
             value={formik.values.phone}
             errorMessage={formik.touched.phone && formik.errors.phone}

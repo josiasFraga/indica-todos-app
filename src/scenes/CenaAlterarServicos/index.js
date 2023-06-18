@@ -41,7 +41,7 @@ export default function CenaAlterarServicos(props) {
 
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const data_loaded = useSelector(state => state.appReducer.services);
+  const data_loaded = useSelector(state => state.appReducer.my_services);
   const [initialValues, setInitialValues] = React.useState({ 
     services: [
         serviceFormObject
@@ -51,7 +51,7 @@ export default function CenaAlterarServicos(props) {
   React.useEffect(() => {
 
     dispatch({
-        type: 'LOAD_SERVICES',
+        type: 'LOAD_MY_SERVICES',
         payload: {}
       })
   },[])

@@ -3,8 +3,8 @@ import {Dimensions, Platform, StatusBar} from 'react-native';
 export default {
   dimensions: Dimensions.get('window'),
   platform: Platform.OS,
-  //baseUrl: 'https://infrete.com.br/painel/app/webroot/api',
-  //url: 'https://infrete.com.br/painel/app/webroot/api',
+  //baseUrl: 'https://api.indicatodos.com.br',
+  //url: 'https://api.indicatodos.com.br',
   baseUrl: 'http://192.168.1.109:8765',
   url: 'http://192.168.1.109:8765',
   googleUrl: 'https://maps.googleapis.com/maps/api/',
