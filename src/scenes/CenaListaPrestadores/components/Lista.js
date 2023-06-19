@@ -6,7 +6,7 @@ import {
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import GlobalStyle from '@styles/global';
-import { ListItem, Text } from 'react-native-elements'
+import { ListItem, Text, Rating  } from 'react-native-elements'
 import { CommonActions, useNavigation } from '@react-navigation/native';
 
 function Lista (props) {
@@ -32,25 +32,6 @@ function Lista (props) {
 
 	}, []);
 
-
-    const RenderItembK = (props) => {
-        const collection = props.item;
-        return (
-            <ListItem bottomDivider onPress={() => getCollection(collection.cd_codagrupador)} disabled={is_starting_collection}>
-                <ListItem.Content>
-                  <ListItem.Title>Fornecedor: {collection.fornecedor_nome_fantasia}</ListItem.Title>
-                  <ListItem.Subtitle>Cód Agrupador: {collection.cd_codagrupador}</ListItem.Subtitle>
-                  <ListItem.Subtitle>Tipo: Contagem</ListItem.Subtitle>
-                  <ListItem.Subtitle>Cód Chave: {collection.cd_chave}</ListItem.Subtitle>
-                  <ListItem.Subtitle>Loja: {collection.loja_nome_fantasia}</ListItem.Subtitle>
-                  <ListItem.Subtitle>Data: {collection.ultatu_br}</ListItem.Subtitle>
-                </ListItem.Content>
-                <ListItem.Chevron />
-              </ListItem>
-            )
-    }
-
-
     const RenderItem = (props) => {
         const item = props.item;
         const services_arr = item.services.map(service => {
@@ -68,10 +49,16 @@ function Lista (props) {
                     })
                 ); 
             }}>
-                <ListItem.Content>
-                  <ListItem.Title>{item.name}</ListItem.Title>
-                  <ListItem.Subtitle>Serviços Prestados: {services_arr.join(', ')}</ListItem.Subtitle>
-                </ListItem.Content>
+                    <ListItem.Content>
+                        <ListItem.Title>{item.name}</ListItem.Title>
+                        <ListItem.Subtitle>Serviços Prestados: {services_arr.join(', ')}</ListItem.Subtitle>
+                    </ListItem.Content>
+                    <Rating
+                        type="star"
+                        startingValue={item.avg_reviews}
+                        imageSize={15}
+                        readonly
+                    />
                 <ListItem.Chevron />
               </ListItem>
             )
