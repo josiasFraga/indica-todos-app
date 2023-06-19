@@ -8,7 +8,7 @@ import GlobalStyle from '@styles/global';
 
 import * as yup from 'yup';
 import Header from "@components/Header";
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import FormAvaliarPrestador from '@components/Forms/FormAvaliarPrestador';
 import NoLoggedMessage from '@components/Misc/NoLoggedMessage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -23,7 +23,7 @@ const validation = yup.object().shape({
 export default function CenaAvaliarPrestador(props) {
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const { service_provider_id } = props.route.params;
+  const { service_provider_id, setIndex } = props.route.params;
   const [isLogged, setIsLogged] = React.useState(false);
   const [initialValues, setInitialValues] = React.useState({ 
     rating: '',
@@ -39,6 +39,16 @@ export default function CenaAvaliarPrestador(props) {
     }
   };
 
+  const carregaAvaliacoes = () => {
+            
+    dispatch({
+      type: 'LOAD_REVIEWS',
+      payload: {
+          service_provider_id: service_provider_id,
+      },
+    });
+  }
+
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: initialValues,
@@ -50,7 +60,9 @@ export default function CenaAvaliarPrestador(props) {
           submitValues: values,
           setSubmitting: setSubmitting,
           callback_success: () => {
+            carregaAvaliacoes();
             navigation.dispatch(StackActions.pop(1)); 
+            setIndex(1);
           }
         }
       });

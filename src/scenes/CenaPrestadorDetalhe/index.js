@@ -3,13 +3,12 @@ import { View, Text, ScrollView, Alert, StyleSheet } from 'react-native';
 import { ListItem, Button, Tab, TabView, Rating, Avatar, Card  } from 'react-native-elements';
 import Header from "@components/Header";
 import COLORS from '@constants/colors';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { CommonActions, useNavigation } from '@react-navigation/native';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import CONFIG from '@constants/configs';
-
 export default function CenaPrestadorDetalhe(props) {
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -18,6 +17,7 @@ export default function CenaPrestadorDetalhe(props) {
 
   const [showFullPhone, setShowFullPhone] = React.useState(false);
   const [index, setIndex] = React.useState(0);
+  const reviews = useSelector((state) => state.appReducer.reviews);
 
   const handleShowFullPhone = async () => {
     const token = await AsyncStorage.getItem('bearerToken');
@@ -37,6 +37,7 @@ export default function CenaPrestadorDetalhe(props) {
         name: 'AvaliarPrestador',
         params: {
           service_provider_id: serviceProvider.id,
+          setIndex: setIndex
         },
       })
     );
@@ -51,6 +52,15 @@ export default function CenaPrestadorDetalhe(props) {
       },
     });
   };
+
+  const carregaAvaliacoes = () => {
+    dispatch({
+        type: 'LOAD_REVIEWS',
+        payload: {
+            service_provider_id: serviceProvider.id,
+        },
+    });
+  }
 
   const formattedPhone = showFullPhone ? serviceProvider.phone : `${serviceProvider.phone.slice(0, 9)}...`;
 
@@ -113,7 +123,7 @@ export default function CenaPrestadorDetalhe(props) {
         <View style={{paddingHorizontal: 16}}>
             <Text style={{ fontSize: 18, fontWeight: 'bold'}}>Avaliações</Text>
         </View>
-    {serviceProvider._reviews.map((review) => {
+    {reviews.map((review) => {
 
       return(
       <Card key={review.created} containerStyle={styles.cardContainer}>
@@ -148,6 +158,7 @@ export default function CenaPrestadorDetalhe(props) {
 
   React.useEffect(() => {
     salvaVisita();
+    carregaAvaliacoes();
   }, []);
 
   return (

@@ -29,6 +29,8 @@ const INITIAL_STATE = {
  is_my_services_loading: false,
  services: [],
  is_services_loading: false,
+ reviews: [],
+ is_reviews_loading: false,
 };
 
 export const appReducer = (state = INITIAL_STATE, action) => {
@@ -110,6 +112,13 @@ export const appReducer = (state = INITIAL_STATE, action) => {
 		return {...state, services: action.payload, is_services_loading: false };
     case 'LOAD_SERVICES_FAILED':
 		return {...state, services: [], is_services_loading: false}; 
+
+    case 'LOAD_REVIEWS':
+		return {...state, reviews: [], is_reviews_loading: true};
+    case 'LOAD_REVIEWS_SUCCESS':
+		return {...state, reviews: action.payload, is_reviews_loading: false };
+    case 'LOAD_REVIEWS_FAILED':
+		return {...state, reviews: [], is_reviews_loading: false}; 
     
     default:
 		return state;

@@ -1246,6 +1246,70 @@ function* saveRating({payload}) {
 	}
 }
 
+function* loadReviews({payload}) {
+
+	console.log('carregando avaliações');
+
+	const networkStatus = yield NetInfo.fetch();
+
+	if ( !networkStatus.isConnected ) {
+		yield AlertHelper.show(
+			'warn',
+			'Sem conexão',
+			'Sem conexão com a internet.',
+		  );
+		  return true;
+
+	}
+
+	try {
+		const response = yield call(callApi, {
+			endpoint: CONFIG.url + '/service-providers/reviews.json',
+			method: 'GET',
+			params: payload
+		});
+
+		if (response.status == 200) {
+			if (response.data.status == 'ok') {
+				yield put({
+					type: 'LOAD_REVIEWS_SUCCESS',
+					payload: response.data.data,
+				});
+	
+			} else {
+				yield AlertHelper.show('error', 'Erro', response.data.msg);
+				yield put({
+					type: 'LOAD_REVIEWS_FAILED',
+					payload: {},
+				});
+	
+			}
+		} else {
+			yield AlertHelper.show('error', 'Erro', response.data.message);
+			yield put({
+				type: 'LOAD_REVIEWS_FAILED',
+				payload: {},
+			});
+
+		}
+
+	} catch ({message, response}) {
+		console.log(response);
+		if (response.data && response.data.code == 401) {
+			yield logout({payload: {}});
+		} else {
+			console.warn('[ERROR : LOAD REVIEWS]', {message, response});
+			yield put({
+				type: 'LOAD_REVIEWS_FAILED',
+				payload: {},
+			});
+			yield AlertHelper.show('error', 'Erro', message);
+			
+		}
+	}
+
+}
+
 export default function* () {
 	yield takeLatest('REGISTER_TRIGGER', registerTrigger);
 	yield takeLatest('LOGIN_TRIGGER', login);
@@ -1268,5 +1332,6 @@ export default function* () {
 	yield takeLatest('SAVE_SERVICES', saveServices);
 	yield takeLatest('LOAD_SERVICES', loadServices);
 	yield takeLatest('SAVE_RATING',	saveRating);
+	yield takeLatest('LOAD_REVIEWS', loadReviews);
 	
 }
