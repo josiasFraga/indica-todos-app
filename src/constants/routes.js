@@ -21,6 +21,7 @@ import CenaPerfil from '@scenes/CenaPerfil';
 import CenaAlterarDadosPrestador from '@scenes/CenaAlterarDadosPrestador';
 import CenaAlterarServicos from '@scenes/CenaAlterarServicos';
 import CenaAvaliarPrestador from '@scenes/CenaAvaliarPrestador';
+import CenaMudaSenha from '@scenes/CenaMudaSenha';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
@@ -123,6 +124,7 @@ export default function Routes(props){
         />
         <Stack.Screen name="PreCadastro" component={CenaPreCadastro} />
         <Stack.Screen name="Login" component={CenaLogin} />
+        <Stack.Screen name="MudaSenha" component={CenaMudaSenha} />
 
         <Stack.Screen name="EmpresaPreDadosComplementares" component={CenaEmpresaPreDadosComplementares} />
         <Stack.Screen name="EmpresaDadosComplementares" component={CenaEmpresaDadosComplementares} />

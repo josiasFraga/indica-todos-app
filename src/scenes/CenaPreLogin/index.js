@@ -23,6 +23,11 @@ export default function CenaPreLogin(props) {
 	}
 
 	const visitante = () => {
+		props.navigation.dispatch(
+			CommonActions.navigate({
+				name: 'TabsScreenUser'
+			})
+		);
 
 	}
 

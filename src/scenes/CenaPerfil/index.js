@@ -6,6 +6,7 @@ import GlobalStyle from "@styles/global";
 import { useDispatch, useSelector } from "react-redux";
 import MenusUsuario from './components/MenusUsuario';
 import MenusPrestador from './components/MenusPrestador';
+import MenusVisitante from './components/MenusVisitante';
 
 import CONFIG from '@constants/configs';
 
@@ -91,7 +92,9 @@ export default function CenaPerfil(props) {
 
           <View style={GlobalStyle.spaceSmall} />
 
-          <MenusUsuario />
+          {!ghest && <MenusUsuario />}
+
+          {ghest && <MenusVisitante />}          
       
           <View style={GlobalStyle.spaceMedium} />
 

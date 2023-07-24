@@ -7,7 +7,7 @@ import {
   StyleSheet,
   TouchableOpacity
 } from 'react-native';
-import {SocialIcon} from 'react-native-elements';
+import { SocialIcon, Button } from 'react-native-elements';
 
 import GlobalStyle from '@styles/global';
 import { CommonActions } from '@react-navigation/native';
@@ -21,6 +21,25 @@ export default function CenaEmpresaPreDadosComplementares (props) {
   
   //const [user, setUser] = React.useState(null);
   const userData = useSelector((state) => state.appReducer.user_data);
+
+  const logout = () => {
+    dispatch({
+        type: 'LOGOUT',
+        payload: {
+            callbackSuccess: () => {
+
+                props.navigation.dispatch(
+                    CommonActions.reset({
+                        index: 1,
+                        routes: [
+                        { name: 'PreLogin' },
+                        ],
+                    })
+                )
+            }
+        }
+    })
+  };
   
   
   componentDidMount = async () => {
@@ -60,10 +79,19 @@ export default function CenaEmpresaPreDadosComplementares (props) {
          }}>
           <SocialIcon
             button
-            title="Vamos Lá"
+            title="Começar"
             style={{backgroundColor: COLORS.primary}}
           />
         </TouchableOpacity>
+
+        <View style={GlobalStyle.spaceSmall} />
+        
+        <Button
+          title="Sair"
+          type="clear"
+          titleStyle={{color: COLORS.primary}}
+          onPress={logout}
+        />
       </View>
 
 

@@ -76,6 +76,14 @@ export default function Login(props) {
 		);
 	}
 
+	const openMudaSenha = () => {
+		props.navigation.dispatch(
+			CommonActions.navigate({
+				name: 'MudaSenha'
+			})
+		);
+	}
+
   return (
     <>
     
@@ -88,14 +96,22 @@ export default function Login(props) {
             <FormLogin formik={formik} />
 
             <View style={styles.signup}>
-            <Text style={styles.signupText}>Ainda não tem cadastro?</Text>
-            <Button
-                title="Cadastre-se aqui"
-                onPress={openCadastro}
-                buttonStyle={styles.signupButton}
-                titleStyle={styles.signupButtonTitle}
+              <Text style={styles.signupText}>Ainda não tem cadastro?</Text>
+              <Button
+                  title="Cadastre-se aqui"
+                  onPress={openCadastro}
+                  buttonStyle={styles.signupButton}
+                  titleStyle={styles.signupButtonTitle}
+                  type="clear"
+              />
+
+              <Button
+                titleStyle={{color: COLORS.primary}}
                 type="clear"
-            />
+                buttonStyle={{borderRadius: 25, paddingVertical: 10}}
+                title="Esqueci minha senha"
+                onPress={openMudaSenha}
+              />
             </View>
         </View>
             <View style={styles.bgImage}>

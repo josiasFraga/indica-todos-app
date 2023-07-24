@@ -1,10 +1,8 @@
 import React from 'react';
-import {
-    FlatList
-} from 'react-native';
 
 import MenuItem from './MenuItem';
 import { useDispatch } from 'react-redux';
+import { Alert} from 'react-native';
 import { StackActions, CommonActions, useNavigation } from '@react-navigation/native';
 import ModalMudaSenha from '@components/Modals/ModalMudaSenha';
 import ModalChooseOrSendPhoto from '@components/Modals/ModalChooseOrSendPhoto';
@@ -56,6 +54,36 @@ export default function MenusUsuario () {
       });
     }
 
+    const deleteUserAccount = () => {
+      dispatch({
+        type: 'DELETE_USER_ACCOUNT',
+        payload: {
+          callback_success: () => {
+            logout();
+          }
+        }
+      });
+    }
+
+    const confirmDeleteUserAccount = () => {
+
+      Alert.alert(
+        'Confirmação',
+        'Você tem certeza? Todos os seus dados serão excluidos.',
+        [
+          {
+            text: 'Não',
+            onPress: () => {},
+            style: 'cancel',
+          },
+          {text: 'Tenho Certeza', onPress: () => {
+            deleteUserAccount();
+          }},
+        ],
+      );
+
+    }
+
     const list = [
 
         {
@@ -72,6 +100,14 @@ export default function MenusUsuario () {
           loading: false,
           onPress: () => {
             setModalSenhaVisivel(true);
+          }
+        },
+        {
+          name: 'Exlcuir Minha Conta',
+          subtitle: 'Todos seu dados serão removidos',
+          loading: false,
+          onPress: () => {
+            confirmDeleteUserAccount();
           }
         },
         {

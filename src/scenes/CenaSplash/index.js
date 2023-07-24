@@ -32,7 +32,7 @@ function CenaSplash (props) {
 				CommonActions.reset({
 					index: 1,
 					routes: [
-					  { name: 'PreLogin' },
+					  { name: 'TabsScreenUser' },
 					],
 				  })
 				)

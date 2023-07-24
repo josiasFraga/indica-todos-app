@@ -6,6 +6,62 @@ import CONFIG from '@constants/configs';
 import NetInfo from "@react-native-community/netinfo";
 import { getUniqueId } from 'react-native-device-info';
 
+function* changePasswordUnauthenticated({payload}) {
+
+	const networkStatus = yield NetInfo.fetch();
+	
+	if ( !networkStatus.isConnected ) {
+		yield AlertHelper.show(
+			'warn',
+			'Sem conexão',
+			'Você só pode fazer fazer uma alteração de senha quando estiver com conexão a internet.',
+		  );
+		  return true;
+	}
+
+	console.log('[SAGA] - MUDANDO SENHA USUÁRIO');
+	console.log(payload.submitValues);
+	
+	let data = new FormData();
+	let dados = payload.submitValues;
+	let step = payload.step;
+	let action = "send-code";
+
+	if ( step == 1 ){ 
+		action = "verify-code";
+	}
+	else if ( step == 2 ){
+		action = "change-password";
+	}
+
+	data.append('dados', JSON.stringify(dados));
+
+	try {
+		const response = yield call(callApi, { 
+			endpoint: CONFIG.url+'/change-password/' + action + '.json',
+			method: 'POST',
+			data: data,
+			headers: {
+				'content-type': 'multipart/form-data',
+			},
+		});
+
+		console.log('[SAGA] - [REQUIDIÇÃO ENVIADA - MUDA SENHA USUÁRIO]', response);
+
+		if ( response.data.status == 'ok' ) {
+			yield payload.callback_success();
+		} else {
+			yield AlertHelper.show('error', 'Erro',  response.data.msg);
+		}
+		yield payload.setSubmitting(false);
+
+	} catch ({message, response}) {
+		console.error('[SAGA] - [MUDA SENHA USUÁRIO]', { message, response });
+		yield AlertHelper.show('error', 'Erro', message);
+		yield payload.setSubmitting(false);
+	}
+}
+
 function* registerTrigger({payload}) {
 
 	const networkStatus = yield NetInfo.fetch();
@@ -1310,7 +1366,61 @@ function* loadReviews({payload}) {
 
 }
 
+function* deleteUserAccount({payload}) {
+
+	const networkStatus = yield NetInfo.fetch();
+	
+	if ( !networkStatus.isConnected ) {
+		yield AlertHelper.show(
+			'warn',
+			'Sem conexão',
+			'Você está sem conexão com a internet.',
+		  );
+		  return true;
+	}
+
+	console.log('[SAGA] - EXCLUINDO CONTA');
+	console.log(payload);
+
+
+	try {
+		const response = yield call(callApi, { 
+			endpoint: CONFIG.url+'/users/delete-account.json',
+			method: 'POST',
+			//data: data,
+			headers: {
+				'content-type': 'multipart/form-data',
+			},
+		});
+
+		console.log('[SAGA] - [EXCLUINDO CONTA]', response);
+
+		if ( response.data.status == 'ok' ) {
+			yield AlertHelper.show('success', 'Tudo Certo',  response.data.message);
+
+			yield payload.callback_success();
+		} else if ( response.data.status == 'warning' ) {
+			yield AlertHelper.show('warning', 'Antenção',  response.data.message);
+
+		} else {
+
+			yield AlertHelper.show('error', 'Erro',  response.data.message);
+		}
+
+	} catch ({message, response}) {
+		if (response.data && response.data.code == 401) {
+			yield logout({payload: {}});
+		} else {
+			console.error('[SAGA] - [EXCLUINDO CONTA DE USUÁRIO]', { message, response });
+			yield AlertHelper.show('error', 'Erro', message);
+			
+		}
+
+	}
+}
+
 export default function* () {
+	yield takeLatest('CHANGE_PASSWORD_UNAUTHENTICATED', changePasswordUnauthenticated);
 	yield takeLatest('REGISTER_TRIGGER', registerTrigger);
 	yield takeLatest('LOGIN_TRIGGER', login);
 	yield takeLatest('LOAD_DASHBOARD_DATA',	loadDashboardData);
@@ -1333,5 +1443,6 @@ export default function* () {
 	yield takeLatest('LOAD_SERVICES', loadServices);
 	yield takeLatest('SAVE_RATING',	saveRating);
 	yield takeLatest('LOAD_REVIEWS', loadReviews);
+	yield takeLatest('DELETE_USER_ACCOUNT', deleteUserAccount);
 	
 }
