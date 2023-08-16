@@ -59,13 +59,13 @@ export default function DadosEmpresa(props) {
     }
   };
 
-  const getAddressData = () => {
+  React.useEffect(() => {
 
     if ( formik.values.service_provider.postal_code.length >= 9 ) {
         fetchData(formik.values.service_provider.postal_code);
     }
+  }, [formik.values.service_provider.postal_code]);
 
-  }
 
   return (
     <>
@@ -125,7 +125,6 @@ export default function DadosEmpresa(props) {
             onChangeText={(value) => {
                 const cep_formatado = maskCEP(value);
                 formik.setFieldValue('service_provider.postal_code', cep_formatado);
-                getAddressData();
             }}
             onBlur={formik.handleBlur('service_provider.postal_code')}
             value={formik.values.service_provider.postal_code}

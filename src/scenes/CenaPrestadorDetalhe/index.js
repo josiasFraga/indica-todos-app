@@ -9,6 +9,8 @@ import { CommonActions, useNavigation } from '@react-navigation/native';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import CONFIG from '@constants/configs';
+import GlobalStyle from '@styles/global';
+
 export default function CenaPrestadorDetalhe(props) {
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -70,9 +72,9 @@ export default function CenaPrestadorDetalhe(props) {
         <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 8 }}>
         {serviceProvider.name}
         </Text>
-        <Text>Email: {serviceProvider.email}</Text>
+        <Text style={GlobalStyle.textBlack}>Email: {serviceProvider.email}</Text>
         <View  style={{ justifyContent: 'space-between', flexDirection: 'row'}}>
-            <Text style={{ verticalAlign: 'middle'}}>
+            <Text style={[GlobalStyle.textBlack, { verticalAlign: 'middle'}]}>
                 Telefone: {formattedPhone}
             </Text>
             {!showFullPhone && (
@@ -84,13 +86,13 @@ export default function CenaPrestadorDetalhe(props) {
             />
             )}
         </View>
-        <Text>Endereço: {serviceProvider.address}</Text>
-        <Text>Número: {serviceProvider.address_number}</Text>
-        <Text>Complemento: {serviceProvider.address_complement}</Text>
-        <Text>Cidade: {serviceProvider.city}</Text>
-        <Text>Estado: {serviceProvider.state}</Text>
-        <Text>CEP: {serviceProvider.postal_code}</Text>
-        <Text>Bairro: {serviceProvider.neighborhood}</Text>
+        <Text style={GlobalStyle.textBlack}>Endereço: {serviceProvider.address}</Text>
+        <Text style={GlobalStyle.textBlack}>Número: {serviceProvider.address_number}</Text>
+        <Text style={GlobalStyle.textBlack}>Complemento: {serviceProvider.address_complement}</Text>
+        <Text style={GlobalStyle.textBlack}>Cidade: {serviceProvider.city}</Text>
+        <Text style={GlobalStyle.textBlack}>Estado: {serviceProvider.state}</Text>
+        <Text style={GlobalStyle.textBlack}>CEP: {serviceProvider.postal_code}</Text>
+        <Text style={GlobalStyle.textBlack}>Bairro: {serviceProvider.neighborhood}</Text>
     </View>
     <View style={{ paddingHorizontal: 16, paddingTop: 16 }}>
         <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 8 }}>
@@ -100,7 +102,7 @@ export default function CenaPrestadorDetalhe(props) {
         <ListItem  bottomDivider key={service.id}>
             <ListItem.Content>
             <ListItem.Title>{service.title}</ListItem.Title>
-            <ListItem.Subtitle>{service.description}</ListItem.Subtitle>
+            <ListItem.Subtitle  style={GlobalStyle.textBlack}>{service.description}</ListItem.Subtitle>
             </ListItem.Content>
         </ListItem>
         ))}

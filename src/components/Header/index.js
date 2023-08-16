@@ -23,13 +23,13 @@ export default class Header extends React.Component<Props> {
           ]}>
           <View style={GlobalStyle.row}>
             <View style={{flex: 1}}>
-              {this.props.backButton &&(
+              {this.props.backButton && (
                 <BackButton backScene='pop' iconColor={this.props.iconColor} />
               )}
             </View>
             <View style={{flex: 6}}><Text style={[GlobalStyle.pageTitle, this.props.titleStyle]}>{this.props.titulo}</Text></View>
             <View style={{flex: 1}}>
-
+                {this.props.rightElement}
             </View>
           </View>
         </View>

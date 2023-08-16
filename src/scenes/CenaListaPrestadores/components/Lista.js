@@ -18,11 +18,14 @@ function Lista (props) {
     const categoria_id = props.categoria_id;
 
     const loadItems = () => {
+        let filters = {
+            categoria_id: categoria_id,
+            subcategorias_ids: props.subcategorias_ids.join(',')
+        };
+    
         dispatch({
 			type: 'LOAD_SERVICE_PROVIDERS',
-			payload: {
-                categoria_id: categoria_id
-            }
+			payload: filters
 		})
 
     }
@@ -30,7 +33,7 @@ function Lista (props) {
 	React.useEffect(() => {	
 		loadItems();
 
-	}, []);
+	}, [props.subcategorias_ids]);
 
     const RenderItem = (props) => {
         const item = props.item;
@@ -52,6 +55,7 @@ function Lista (props) {
                     <ListItem.Content>
                         <ListItem.Title>{item.name}</ListItem.Title>
                         <ListItem.Subtitle>Serviços Prestados: {services_arr.join(', ')}</ListItem.Subtitle>
+                        <ListItem.Subtitle>Subcategorias: {item._subcategories.join(', ')}</ListItem.Subtitle>
                     </ListItem.Content>
                     <Rating
                         type="star"
