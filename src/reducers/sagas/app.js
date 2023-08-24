@@ -51,7 +51,7 @@ function* changePasswordUnauthenticated({payload}) {
 		if ( response.data.status == 'ok' ) {
 			yield payload.callback_success();
 		} else {
-			yield AlertHelper.show('error', 'Erro',  response.data.msg);
+			yield AlertHelper.show('error', 'Erro',  response.data.message);
 		}
 		yield payload.setSubmitting(false);
 
@@ -106,7 +106,7 @@ function* registerTrigger({payload}) {
 
 			} else {
 
-				yield AlertHelper.show('error', 'Erro',  response.data.msg);
+				yield AlertHelper.show('error', 'Erro',  response.data.message);
 			}
 		}
 		yield payload.setSubmitting(false);
@@ -153,19 +153,26 @@ function* login({payload}) {
 		console.log('[SAGA] - [LOGANDO]', response);
 
 		if ( response.status == 200 ) {
-			yield put({
-				type: 'LOGIN_SUCCESS',
-				payload: true,
-			});
 
-			console.log('[SAGA] - TOKEN ' + response.data.token);
+			if ( response.data.status == "ok" ) {
+				yield put({
+					type: 'LOGIN_SUCCESS',
+					payload: true,
+				});
+	
+				console.log('[SAGA] - TOKEN ' + response.data.token);
+	
+				yield AsyncStorage.setItem('bearerToken', response.data.token);
+				yield AsyncStorage.setItem('userType', response.data.type);
+				yield AsyncStorage.setItem('servicesExist', response.data.services_exist);
+				yield AsyncStorage.setItem('bearerTokenValidade', String(response.data.validation));
+	
+				yield payload.callback_success(response.data.type == 'servide_provider' && response.data.services_exist == '0');
 
-			yield AsyncStorage.setItem('bearerToken', response.data.token);
-			yield AsyncStorage.setItem('userType', response.data.type);
-			yield AsyncStorage.setItem('servicesExist', response.data.services_exist);
-			yield AsyncStorage.setItem('bearerTokenValidade', String(response.data.validation));
+			} else if ( response.data.status == "error" && response.data.error == "invalid_signature" ) {
+				AlertHelper.show('warning', 'Erro', 'Existem problemas com seu pagamento. Por favor, entre em contato com o Indica Todos para resolvê-los.');
 
-			yield payload.callback_success(response.data.type == 'servide_provider' && response.data.services_exist == '0');
+			}
 
 		} else {
 			AlertHelper.show('error', 'Erro', response.data.message);
@@ -210,6 +217,7 @@ function* endRegisterTrigger({payload}) {
 			'Sem conexão',
 			'Você só pode finalizar um cadastro quando estiver com conexão a internet.',
 		  );
+		  yield payload.setSubmitting(false);
 		  return true;
 	}
 
@@ -244,15 +252,15 @@ function* endRegisterTrigger({payload}) {
 
 			} else {
 
-				yield AlertHelper.show('error', 'Erro',  response.data.msg);
+				yield AlertHelper.show('error', 'Erro',  response.data.message);
 			}
 		}
 		yield payload.setSubmitting(false);
 
 	} catch ({message, response}) {
+		yield payload.setSubmitting(false);
 		console.error('[SAGA] - [CADASTRANDO PRESTADOR]', { message, response });
 		yield AlertHelper.show('error', 'Erro', message);
-		yield payload.setSubmitting(false);
 	}
 }
 
@@ -286,7 +294,7 @@ function* loadDashboardData({payload}) {
 				});
 	
 			} else {
-				yield AlertHelper.show('error', 'Erro', response.data.msg);
+				yield AlertHelper.show('error', 'Erro', response.data.message);
 				yield put({
 					type: 'LOAD_DASHBOARD_DATA_FAILED',
 					payload: {},
@@ -355,7 +363,7 @@ function* loadUserLocation({payload}) {
 				});
 	
 			} else {
-				yield AlertHelper.show('error', 'Erro', response.data.msg);
+				yield AlertHelper.show('error', 'Erro', response.data.message);
 				yield put({
 					type: 'LOAD_USER_LOCATION_FAILED',
 					payload: {},
@@ -475,7 +483,7 @@ function* loadServiceCategories({payload}) {
 				});
 	
 			} else {
-				yield AlertHelper.show('error', 'Erro', response.data.msg);
+				yield AlertHelper.show('error', 'Erro', response.data.message);
 				yield put({
 					type: 'LOAD_SERVICE_CATEGORIES_FAILED',
 					payload: {},
@@ -539,7 +547,7 @@ function* loadServiceSubCategories({payload}) {
 				});
 	
 			} else {
-				yield AlertHelper.show('error', 'Erro', response.data.msg);
+				yield AlertHelper.show('error', 'Erro', response.data.message);
 				yield put({
 					type: 'LOAD_SERVICE_SUBCATEGORIES_FAILED',
 					payload: {},
@@ -603,7 +611,7 @@ function* loadServiceProviders({payload}) {
 				});
 	
 			} else {
-				yield AlertHelper.show('error', 'Erro', response.data.msg);
+				yield AlertHelper.show('error', 'Erro', response.data.message);
 				yield put({
 					type: 'LOAD_SERVICE_PROVIDERS_FAILED',
 					payload: {},
@@ -732,7 +740,7 @@ function* loadUserData({payload}) {
 				});
 	
 			} else {
-				yield AlertHelper.show('error', 'Erro', response.data.msg);
+				yield AlertHelper.show('error', 'Erro', response.data.message);
 				yield put({
 					type: 'LOAD_USER_DATA_FAILED',
 					payload: {},
@@ -903,7 +911,7 @@ function* loadMeasurementUnits({payload}) {
 				});
 	
 			} else {
-				yield AlertHelper.show('error', 'Erro', response.data.msg);
+				yield AlertHelper.show('error', 'Erro', response.data.message);
 				yield put({
 					type: 'LOAD_MEASUREMENT_UNITS_FAILED',
 					payload: {},
@@ -967,7 +975,7 @@ function* loadBusinessData({payload}) {
 				});
 	
 			} else {
-				yield AlertHelper.show('error', 'Erro', response.data.msg);
+				yield AlertHelper.show('error', 'Erro', response.data.message);
 				yield put({
 					type: 'LOAD_BUSINESS_DATA_FAILED',
 					payload: {},
@@ -1088,7 +1096,7 @@ function* loadMyServices({payload}) {
 				});
 	
 			} else {
-				yield AlertHelper.show('error', 'Erro', response.data.msg);
+				yield AlertHelper.show('error', 'Erro', response.data.message);
 				yield put({
 					type: 'LOAD_MY_SERVICES_FAILED',
 					payload: {},
@@ -1209,7 +1217,7 @@ function* loadServices({payload}) {
 				});
 	
 			} else {
-				yield AlertHelper.show('error', 'Erro', response.data.msg);
+				yield AlertHelper.show('error', 'Erro', response.data.message);
 				yield put({
 					type: 'LOAD_SERVICES_FAILED',
 					payload: {},
@@ -1333,7 +1341,7 @@ function* loadReviews({payload}) {
 				});
 	
 			} else {
-				yield AlertHelper.show('error', 'Erro', response.data.msg);
+				yield AlertHelper.show('error', 'Erro', response.data.message);
 				yield put({
 					type: 'LOAD_REVIEWS_FAILED',
 					payload: {},

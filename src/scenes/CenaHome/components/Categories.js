@@ -39,6 +39,10 @@ function Categories (props) {
 		componentDidMount();
 	}, [])
 
+	React.useEffect(() => {	
+		buscaItens();
+	}, [user_location])
+
     const renderItem = ({item}) => {
         return (
             <ImageBackground 
@@ -70,7 +74,7 @@ function Categories (props) {
                 keyExtractor={item => item.id}
                 refreshing={service_categories_loading}
                 ListEmptyComponent={() => (
-                    <Text style={{textAlign: 'center'}}>Nenhum prestador encontrado na sua área escaneado.</Text>
+                    <Text style={{textAlign: 'center', marginTop: 50}}>Nenhum prestador encontrado na sua área.</Text>
                 )}
             />
 		</View>

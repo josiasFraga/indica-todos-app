@@ -84,7 +84,7 @@ function Lista (props) {
                         if ( service_providers_loading ) {
                             return null;
                         }
-                        return <Text>Nenhum prestador encontrado</Text>
+                        return (<Text style={{textAlign: 'center', marginTop: 50}}>Nenhum prestador encontrado com os filtros selecionados.</Text>)
                     }}
                 />
 			</View>

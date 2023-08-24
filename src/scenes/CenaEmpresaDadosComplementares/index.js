@@ -131,6 +131,7 @@ export default function CenaEmpresaDadosComplementares () {
 
           if ( step < 1) {
             setStep((step+1));
+            setSubmitting(false);
             return false;
           }
         
