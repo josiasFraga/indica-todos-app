@@ -62,6 +62,63 @@ function* changePasswordUnauthenticated({payload}) {
 	}
 }
 
+function* checkSignatureStatus({payload}) {
+
+	console.log('verificando a assinatura do usuário');
+
+	const networkStatus = yield NetInfo.fetch();
+
+	if ( !networkStatus.isConnected ) {
+		yield AlertHelper.show(
+			'warn',
+			'Sem conexão',
+			'Sem conexão com a internet.',
+		  );
+
+		  yield payload.callback_error();
+		  return true;
+	}
+	
+	try {
+		const response = yield call(callApi, {
+			endpoint: CONFIG.url + '/users/signature-status.json',
+			method: 'GET',
+			//params: params
+		});
+
+		if (response.status == 200) {
+			if (response.data.status == 'ok') {
+				
+				if ( response.data.data == 'ACTIVE' ) {
+					yield payload.callback_success();
+				} else {
+					yield AlertHelper.show('warning', 'Problemas com assinatura', 'Existem problemas com a sua assinatura. Entre em contato com o Indica Todos para resolvê-los.');					
+					yield logout({payload: {}});
+					yield payload.callback_error();
+				}
+	
+			} else {
+				yield AlertHelper.show('error', 'Erro', response.data.message);
+				yield logout({payload: {}});
+				yield payload.callback_error();
+	
+			}
+		} else {
+			yield AlertHelper.show('error', 'Erro', 'Ocorreu um erro ao verificar o status da sua assinatura');
+			yield logout({payload: {}});
+			yield payload.callback_error();
+
+		}
+
+	} catch ({message, response}) {
+
+		yield logout({payload: {}});
+		yield payload.callback_error();			
+
+	}
+
+}
+
 function* registerTrigger({payload}) {
 
 	const networkStatus = yield NetInfo.fetch();
@@ -169,7 +226,7 @@ function* login({payload}) {
 	
 				yield payload.callback_success(response.data.type == 'servide_provider' && response.data.services_exist == '0');
 
-			} else if ( response.data.status == "error" && response.data.error == "invalid_signature" ) {
+			} else if ( response.data.status == "erro" && response.data.error == "invalid_signature" ) {
 				AlertHelper.show('warning', 'Erro', 'Existem problemas com seu pagamento. Por favor, entre em contato com o Indica Todos para resolvê-los.');
 
 			}
@@ -1429,6 +1486,7 @@ function* deleteUserAccount({payload}) {
 
 export default function* () {
 	yield takeLatest('CHANGE_PASSWORD_UNAUTHENTICATED', changePasswordUnauthenticated);
+	yield takeLatest('CHECK_SIGNATURE_STATUS', checkSignatureStatus);
 	yield takeLatest('REGISTER_TRIGGER', registerTrigger);
 	yield takeLatest('LOGIN_TRIGGER', login);
 	yield takeLatest('LOAD_DASHBOARD_DATA',	loadDashboardData);

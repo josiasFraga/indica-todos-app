@@ -11,7 +11,11 @@ import NetInfo from "@react-native-community/netinfo";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import COLORS from '@constants/colors';
 
+import { useDispatch } from 'react-redux';
+
 function CenaSplash (props) {
+
+    const dispatch = useDispatch();
 
 	const componentDidMount = async () => {
 
@@ -47,23 +51,73 @@ function CenaSplash (props) {
 				// Verifique se o token existe e ainda é válido
 				if (token && validade && Date.now() < (parseInt(validade) * 1000)) {
 	
-					// O token é válido, redirecione para a tela principal
-					let redirectToScene = 'TabsScreenUser';
+					// O token é válido, redirecione o usuário
+
+					// O usuário é empresa e ainda não adicionou seus serviços
 					if ( userType == 'servide_provider' && servicesExist == '0' ) {
-						redirectToScene = 'EmpresaPreDadosComplementares';
+
+						setTimeout(() => {
+							props.navigation.dispatch(
+							CommonActions.reset({
+								index: 1,
+								routes: [
+									{ name:  'EmpresaPreDadosComplementares' },
+								],
+							})
+							)
+						},5000);
+					
+					// O usuário é empresa e já adicionou seus serviços
 					} else if ( userType == 'servide_provider' && servicesExist != '0' ) {
-						redirectToScene = 'TabsScreenProvider';
+
+						// Verifica o status da assinatura
+						dispatch({
+							type: 'CHECK_SIGNATURE_STATUS',
+							payload: {
+	
+								callback_success: () => {
+									
+									setTimeout(() => {
+										props.navigation.dispatch(
+										CommonActions.reset({
+											index: 1,
+											routes: [
+												{ name:  'TabsScreenProvider' },
+											],
+										})
+										)
+									},4000);
+								},
+	
+								callback_error: () => {
+									
+									setTimeout(() => {
+										props.navigation.dispatch(
+										CommonActions.reset({
+											index: 1,
+											routes: [
+												{ name:  'PreLogin' },
+											],
+										})
+										)
+									},4000);
+								}
+							}
+						});
+
+					} else {
+
+						setTimeout(() => {
+							props.navigation.dispatch(
+							CommonActions.reset({
+								index: 1,
+								routes: [
+									{ name:  'TabsScreenUser' },
+								],
+							})
+							)
+						},5000);
 					}
-					setTimeout(() => {
-						props.navigation.dispatch(
-						CommonActions.reset({
-							index: 1,
-							routes: [
-							{ name:  redirectToScene },
-							],
-						})
-						)
-					},5000);
 	
 				} else {	
 					// O token não é válido, redirecione para a tela de login
