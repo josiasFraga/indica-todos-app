@@ -24,7 +24,7 @@ export default function CenaEmpresaDadosComplementares () {
     const dispatch = useDispatch();
     const navigation = useNavigation();
     const [step, setStep] = React.useState(0);
-    const buttonText = step == 0 ? "Continuar" : "Finalizar Cadastro";
+    const buttonText = step == 0 ? "Continuar" : "Aceitar e continuar";
 
     const openHomeCene = () => {
 
@@ -62,7 +62,7 @@ export default function CenaEmpresaDadosComplementares () {
           // Defina as validações para cada serviço, se necessário
         })
       ),
-      cc_number: yup
+      /*cc_number: yup
         .string()
         .required('Número do cartão de crédito é obrigatório'),
       cc_name: yup.string().required('Nome do titular do cartão é obrigatório'),
@@ -87,7 +87,7 @@ export default function CenaEmpresaDadosComplementares () {
         address: yup.string().required('Endereço é obrigatório'),
         neighborhood: yup.string().required('Bairro é obrigatório'),
         address_number: yup.string().required('Número do endereço é obrigatório'),
-      }),
+      }),*/
     });
 
     const serviceFormObject = 
@@ -105,7 +105,7 @@ export default function CenaEmpresaDadosComplementares () {
             services: [
                 serviceFormObject
             ],
-            cc_number: '',
+            /*cc_number: '',
             cc_name: '',
             cc_expiry: '',
             cc_secure_code: '',
@@ -124,7 +124,7 @@ export default function CenaEmpresaDadosComplementares () {
               address_number: '',
               address_complement: '',
               neighborhood: ''
-            }
+            }*/
         },
         validationSchema: cadastroSchema[step],
         onSubmit: (values, {setSubmitting, resetForm}) => {
@@ -169,7 +169,9 @@ export default function CenaEmpresaDadosComplementares () {
         <ScrollView style={GlobalStyle.secureMargin}>
 
           {step == 0 && <FormPrestadorServicos formik={formik} serviceFormObject={serviceFormObject} />}
-          {step == 1 && <FormPagamento formik={formik} />}
+          {step == -1 && <FormPagamento formik={formik} />}
+
+          {step == 1 && <Text>O Indica Todos é gratuito pelos primeiros 6 meses (período de testes). Após esse período, serão cobrados R$ 19,90 mensais.</Text>}
 
           <Button
             titleStyle={{}}

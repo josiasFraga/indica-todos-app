@@ -141,7 +141,7 @@ function CenaSplash (props) {
 	}, [])
 
 	return (
-		<View style={[styles.container, {backgroundColor: COLORS.primary}]}>
+		<View style={[styles.container, {backgroundColor: '#FFF'}]}>
 			<StatusBar
 				translucent={true}
 				backgroundColor={'transparent'}
@@ -149,7 +149,7 @@ function CenaSplash (props) {
 			/>
 
 			<View style={styles.imageContainer}>
-				<Image source={IMAGES.LOGO} style={{ width: 200, height: 200 }} />
+				<Image source={IMAGES.LOGO} style={{ width: 400, height: 400 }} />
 			</View>
 		</View>
 	);

@@ -1,5 +1,5 @@
 export default {
-  LOGO: require('@assets/imgs/logo.png'),
+  LOGO: require('@assets/imgs/logo.jpeg'),
   LOGO_ROTATED: require('@assets/imgs/logo_rotated.png'),
   BG_LOGIN: require('@assets/imgs/bg_login.png'),
   BG_HOME: require('@assets/imgs/caminhao.png'),
