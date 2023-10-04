@@ -3,6 +3,7 @@ import {
 	StyleSheet,
 	View,
 	StatusBar,
+	Platform
 } from 'react-native';
 import {Button, Icon, Image } from 'react-native-elements';
 import GlobalStyle from '@styles/global';
@@ -34,7 +35,7 @@ export default function CenaPreLogin(props) {
 	const openCadastro = () => {
 		props.navigation.dispatch(
 			CommonActions.navigate({
-				name: 'PreCadastro'
+				name: Platform.OS === 'ios' ? 'CadastroUsuarios' : 'PreCadastro'
 			})
 		);
 	}
