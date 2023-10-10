@@ -94,7 +94,7 @@ export default function CenaCadastroPrestadores(props) {
             AlertHelper.show(
               'success',
               'Tudo Certo',
-              'Seu cadastro foi realizado com sucesso!',
+              'Você tem 6 meses para testar o Indica Todos a partir de hoje. Aproveite!',
             );
             openLoginCene();
           }
