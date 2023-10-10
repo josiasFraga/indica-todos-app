@@ -4,7 +4,8 @@ import {
 	View,
     FlatList,
     Text,
-    ImageBackground
+    ImageBackground,
+    TouchableWithoutFeedback
 } from 'react-native';
 import { StackActions, CommonActions, useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
@@ -49,8 +50,7 @@ function Categories (props) {
                 source={{uri: item.image}} 
                 style={styles.backgroundImage}
             >
-                <View style={styles.overlay}>
-                    <Text style={styles.title} onPress={()=>{
+                <TouchableWithoutFeedback onPress={()=>{
                     navigation.dispatch(
                         CommonActions.navigate({
 							name: 'ListaPrestadores',
@@ -59,8 +59,11 @@ function Categories (props) {
                             },
 						})
 					);
-                }}>{item.name}</Text>
-                </View>
+                }} style={{flex: 1, width: '100%', height: '100%'}}>
+                    <View style={styles.overlay}>
+                        <Text style={styles.title}>{item.name}</Text>
+                    </View>
+                </TouchableWithoutFeedback>
             </ImageBackground>
         )
     };
@@ -103,16 +106,18 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0, 0, 0, 0.7)',
         justifyContent: 'center',
         alignItems: 'center',
-        width: '100%'
+        width: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
       },
     title: {
-        flex: 1,
         textAlign: 'center',
         fontSize: 24,
         width: '100%',
         color: 'white',
         fontWeight: 'bold',
-        textAlignVertical: 'center'
+        textAlignVertical: 'center',
+        display: 'flex'
     }
 });
 
