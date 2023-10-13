@@ -89,7 +89,7 @@ function* checkSignatureStatus({payload}) {
 		if (response.status == 200) {
 			if (response.data.status == 'ok') {
 				
-				if ( response.data.data == 'ACTIVE' ) {
+				if ( response.data.data == 'ACTIVE' || response.data.data == 'TRIAL' ) {
 					yield payload.callback_success();
 				} else {
 					yield AlertHelper.show('warning', 'Problemas com assinatura', 'Existem problemas com a sua assinatura. Entre em contato com o Indica Todos para resolvê-los.');					
@@ -758,6 +758,11 @@ function* logout({payload}) {
 	yield AsyncStorage.removeItem('bearerToken');
 	yield AsyncStorage.removeItem('userType');
 	yield AsyncStorage.removeItem('servicesExist');
+
+	yield put({
+		type: 'LOAD_USER_DATA_FAILED',
+		payload: {},
+	});
 
 	if ( payload.callbackSuccess ) {
 		yield payload.callbackSuccess();

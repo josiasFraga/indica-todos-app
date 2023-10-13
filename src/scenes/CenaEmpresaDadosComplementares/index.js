@@ -4,6 +4,7 @@ import {
   ScrollView,
   SafeAreaView,
   StyleSheet,
+  Text
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import FormPrestadorServicos from '@components/Forms/FormPrestadorServicos';
@@ -171,7 +172,7 @@ export default function CenaEmpresaDadosComplementares () {
           {step == 0 && <FormPrestadorServicos formik={formik} serviceFormObject={serviceFormObject} />}
           {step == -1 && <FormPagamento formik={formik} />}
 
-          {step == 1 && <Text>O Indica Todos é gratuito pelos primeiros 6 meses (período de testes). Após esse período, serão cobrados R$ 19,90 mensais.</Text>}
+          {step == 1 && <Text style={{marginBottom: 20, marginTop: 10}}>O Indica Todos é gratuito pelos primeiros 6 meses (período de testes). Aproveite!</Text>}
 
           <Button
             titleStyle={{}}

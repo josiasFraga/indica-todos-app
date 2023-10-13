@@ -35,7 +35,7 @@ export default function CenaPreLogin(props) {
 	const openCadastro = () => {
 		props.navigation.dispatch(
 			CommonActions.navigate({
-				name: Platform.OS === 'ios' ? 'CadastroUsuarios' : 'PreCadastro'
+				name: 'PreCadastro'
 			})
 		);
 	}
