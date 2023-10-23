@@ -175,6 +175,62 @@ function* registerTrigger({payload}) {
 	}
 }
 
+function* registerBusinessTrigger({payload}) {
+
+	const networkStatus = yield NetInfo.fetch();
+	
+	if ( !networkStatus.isConnected ) {
+		yield AlertHelper.show(
+			'warn',
+			'Sem conexão',
+			'Você só pode fazer um cadastro quando estiver com conexão a internet.',
+		  );
+		  return true;
+	}
+
+	//const notifications_id = yield JSON.parse(yield AsyncStorage.getItem('oneSignalToken'))?.userId;
+
+	console.log('[SAGA] - CADASTRANDO USUÁRIO');
+	console.log(payload.submitValues);
+	
+	let data = new FormData();
+	let dados = payload.submitValues;
+	//dados.notificacao_token = notifications_id;
+
+	data.append('dados', JSON.stringify(dados));
+
+	try {
+		const response = yield call(callApi, { 
+			endpoint: CONFIG.url+'/users/add-my-business.json',
+			method: 'POST',
+			data: data,
+			headers: {
+				'content-type': 'multipart/form-data',
+			},
+		});
+
+		console.log('[SAGA] - [CADASTRANDO USUÁRIO]', response);
+
+		if ( response.data.status == 'ok' ) {
+			yield payload.callback_success();
+		} else {
+			if ( response.data.error && response.data.error.email ) {
+				yield AlertHelper.show('warning', 'Atenção',  'O email que você está tentando cadastrar já está sendo usado por outro usuário.');
+
+			} else {
+
+				yield AlertHelper.show('error', 'Erro',  response.data.message);
+			}
+		}
+		yield payload.setSubmitting(false);
+
+	} catch ({message, response}) {
+		console.error('[SAGA] - [CADASTRANDO USUÁRIO]', { message, response });
+		yield AlertHelper.show('error', 'Erro', message);
+		yield payload.setSubmitting(false);
+	}
+}
+
 function* login({payload}) {
 
 	const networkStatus = yield NetInfo.fetch();
@@ -1493,6 +1549,7 @@ export default function* () {
 	yield takeLatest('CHANGE_PASSWORD_UNAUTHENTICATED', changePasswordUnauthenticated);
 	yield takeLatest('CHECK_SIGNATURE_STATUS', checkSignatureStatus);
 	yield takeLatest('REGISTER_TRIGGER', registerTrigger);
+	yield takeLatest('REGISTER_BUSINESS_TRIGGER', registerBusinessTrigger);
 	yield takeLatest('LOGIN_TRIGGER', login);
 	yield takeLatest('LOAD_DASHBOARD_DATA',	loadDashboardData);
 	yield takeLatest('SAVE_USER_LOCATION', saveUserLocation);

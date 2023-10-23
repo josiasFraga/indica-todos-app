@@ -7,13 +7,14 @@ import { StackActions, CommonActions, useNavigation } from '@react-navigation/na
 import ModalMudaSenha from '@components/Modals/ModalMudaSenha';
 import ModalChooseOrSendPhoto from '@components/Modals/ModalChooseOrSendPhoto';
 
-export default function MenusUsuario () {
+export default function MenusUsuario (props) {
 
     const navigation = useNavigation();
     const dispatch = useDispatch();
 
     const [modalSenhaVisivel, setModalSenhaVisivel] = React.useState(false);
     const [modalPhotoVisible, setModalPhotoVisible] = React.useState(false);
+    const userType = props.userType;
 
     const logout = () => {
       dispatch({
@@ -52,6 +53,16 @@ export default function MenusUsuario () {
           }
         }
       });
+    }
+
+    const submitMyBusiness = () => {
+      
+
+      navigation.dispatch(
+        CommonActions.navigate({
+            name: 'CadastrarEmpresa'
+        })
+    );
     }
 
     const deleteUserAccount = () => {
@@ -118,6 +129,18 @@ export default function MenusUsuario () {
           }
         },
     ];
+
+    if ( userType == 'user' ) {
+      // Se userType for 'user', insira o item no local desejado
+      list.splice(2, 0, {
+        name: 'Cadastrar minha empresa',
+        subtitle: '',
+        loading: false,
+        onPress: () => {
+          submitMyBusiness();
+        }
+      });
+    }
 
     return (
       <>

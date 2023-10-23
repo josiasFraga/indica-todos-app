@@ -22,6 +22,7 @@ import CenaAlterarDadosPrestador from '@scenes/CenaAlterarDadosPrestador';
 import CenaAlterarServicos from '@scenes/CenaAlterarServicos';
 import CenaAvaliarPrestador from '@scenes/CenaAvaliarPrestador';
 import CenaMudaSenha from '@scenes/CenaMudaSenha';
+import CenaCadastrarEmpresa from '@scenes/CenaCadastrarEmpresa';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
@@ -41,13 +42,26 @@ export default function Routes(props){
       }}>
         <AppTabs.Screen 
           name="Home" 
-          component={CenaHomeProvider}
+          component={CenaHome}
           options={{
             tabBarActiveTintColor: COLORS.primary,
             tabBarInactiveTintColor: '#CCC',
             tabBarIcon: (iconProps) => {
               return(
               <Icon name="home" size={iconProps.size} color={iconProps.color} />
+              )
+            }
+          }}
+        />
+        <AppTabs.Screen 
+          name="Dashboard" 
+          component={CenaHomeProvider}
+          options={{
+            tabBarActiveTintColor: COLORS.primary,
+            tabBarInactiveTintColor: '#CCC',
+            tabBarIcon: (iconProps) => {
+              return(
+              <Icon name="dashboard" size={iconProps.size} color={iconProps.color} />
               )
             }
           }}
@@ -141,6 +155,8 @@ export default function Routes(props){
         <Stack.Screen name="AlterarServicos" component={CenaAlterarServicos} />
     
         <Stack.Screen name="AvaliarPrestador" component={CenaAvaliarPrestador} />
+    
+        <Stack.Screen name="CadastrarEmpresa" component={CenaCadastrarEmpresa} />
 
         <Stack.Group screenOptions={{ presentation: 'modal' }}>
           <Stack.Screen name="SelecionaLocalizacao" component={CenaSelecionaLocalizacao} />

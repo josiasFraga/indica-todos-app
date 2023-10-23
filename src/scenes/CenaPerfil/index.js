@@ -92,7 +92,7 @@ export default function CenaPerfil(props) {
 
           <View style={GlobalStyle.spaceSmall} />
 
-          {!ghest && <MenusUsuario />}
+          {!ghest && <MenusUsuario userType={userType} />}
 
           {ghest && <MenusVisitante />}          
       
