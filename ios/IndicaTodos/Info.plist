@@ -39,6 +39,8 @@
 	<string>We need access to your camera to be able to read the qrcodes of the physical notes and to exchange your profile image.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>We need access to your location to help us list the service providers closest to you.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>We need access to your location to help us list the service providers closest to you.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>We need access to your camera to be able to exchange your profile image.</string>
 	<key>UIAppFonts</key>

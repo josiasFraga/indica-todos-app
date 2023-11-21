@@ -337,6 +337,8 @@ PODS:
     - React-Core
   - react-native-camera/RN (4.2.1):
     - React-Core
+  - react-native-geolocation (3.1.0):
+    - React-Core
   - react-native-image-picker (4.10.0):
     - React-Core
   - react-native-keyevent (0.2.8):
@@ -525,6 +527,7 @@ DEPENDENCIES:
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - react-native-camera (from `../node_modules/react-native-camera`)
+  - "react-native-geolocation (from `../node_modules/@react-native-community/geolocation`)"
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - react-native-keyevent (from `../node_modules/react-native-keyevent`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
@@ -614,6 +617,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/logger"
   react-native-camera:
     :path: "../node_modules/react-native-camera"
+  react-native-geolocation:
+    :path: "../node_modules/@react-native-community/geolocation"
   react-native-image-picker:
     :path: "../node_modules/react-native-image-picker"
   react-native-keyevent:
@@ -704,6 +709,7 @@ SPEC CHECKSUMS:
   React-jsinspector: 1f51e775819199d3fe9410e69ee8d4c4161c7b06
   React-logger: 0d58569ec51d30d1792c5e86a8e3b78d24b582c6
   react-native-camera: 210a872c84d3aa0982a9223047ef9e743ed694fa
+  react-native-geolocation: ef66fb798d96284c6043f0b16c15d9d1d4955db4
   react-native-image-picker: 35834940bc572ba914707c39b60e043a06f88178
   react-native-keyevent: f8728b8c73dbfbcb4d2c56d9e78be082c673c456
   react-native-netinfo: 877946c7b4eb85a639cf1ea31333dadc2be999a1
@@ -736,4 +742,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 4626a27bf030492d1707e627cc546910843706f8
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.13.0

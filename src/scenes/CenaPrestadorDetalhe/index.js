@@ -48,7 +48,7 @@ export default function CenaPrestadorDetalhe(props) {
 
   const openWpp = async (number) =>{
     const message = '';
-    const whatsappUrl = `whatsapp://send?phone=+55${number}&text=${encodeURIComponent(message)}`;
+    const whatsappUrl = `whatsapp://send?phone=+55${number.replace(/\D/g,'')}&text=${encodeURIComponent(message)}`;
   
     try {
       const supported = await Linking.canOpenURL(whatsappUrl);
