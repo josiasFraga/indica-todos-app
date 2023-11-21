@@ -87,7 +87,7 @@ export default function DadosEmpresa(props) {
         />
     
         <Input
-            label="Telefone"
+            label="Telefone Celular"
             leftIcon={<Icon name="phone" size={24} color={COLORS.secondary} />}
             onChangeText={(value) => {
                 const telefone_formatado = maskPhone(value);
@@ -99,7 +99,7 @@ export default function DadosEmpresa(props) {
             keyboardType="phone-pad"
             autoCorrect={false}
             autoCompleteType="tel"
-            placeholder="Digite o telefone"
+            placeholder="Digite o telefone celular"
             placeholderTextColor={COLORS.quaternary}
             maxLength={15}
         />

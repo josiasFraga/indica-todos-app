@@ -29,7 +29,7 @@ export default function FormCadastroUsuario(props) {
             placeholderTextColor={COLORS.quaternary}
         />
         <Input
-            label="Telefone"
+            label="Telefone Celular"
             leftIcon={<Icon name="phone" size={24} color={COLORS.secondary} type='antdesign' />}
             onChangeText={(value) => {
                 const telefone_formatado = maskPhone(value);
@@ -41,8 +41,9 @@ export default function FormCadastroUsuario(props) {
             keyboardType="phone-pad"
             autoCorrect={false}
             autoCompleteType="tel"
-            placeholder="Digite seu telefone"
+            placeholder="Digite seu telefone celular"
             placeholderTextColor={COLORS.quaternary}
+            maxLength={15}
         />
         <Input
             label="E-mail"

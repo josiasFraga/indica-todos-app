@@ -34,7 +34,7 @@ export default function CenaSelecionaLocalizacao (props) {
     
                 setCity(city_name);
                 setState(uf_name);
-                
+
                 dispatch({
                     type: 'SAVE_USER_LOCATION',
                     payload: {

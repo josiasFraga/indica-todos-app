@@ -474,6 +474,10 @@ function* loadUserLocation({payload}) {
 					type: 'LOAD_USER_LOCATION_SUCCESS',
 					payload: response.data.data == null ? {} : response.data.data,
 				});
+
+				if ( response.data.data == null && payload.callbackNotFind ) {
+					payload.callbackNotFind();
+				}
 	
 			} else {
 				yield AlertHelper.show('error', 'Erro', response.data.message);

@@ -114,7 +114,7 @@ export default function MenusUsuario (props) {
           }
         },
         {
-          name: 'Exlcuir Minha Conta',
+          name: 'Excluir Minha Conta',
           subtitle: 'Todos seu dados serão removidos',
           loading: false,
           onPress: () => {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, ScrollView, Alert, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, Alert, StyleSheet, Linking, TouchableWithoutFeedback } from 'react-native';
 import { ListItem, Button, Tab, TabView, Rating, Avatar, Card  } from 'react-native-elements';
 import Header from "@components/Header";
 import COLORS from '@constants/colors';
@@ -22,7 +22,8 @@ export default function CenaPrestadorDetalhe(props) {
   const reviews = useSelector((state) => state.appReducer.reviews);
 
   const handleShowFullPhone = async () => {
-    const token = await AsyncStorage.getItem('bearerToken');
+    setShowFullPhone(!showFullPhone);
+    /*const token = await AsyncStorage.getItem('bearerToken');
     const validade = await AsyncStorage.getItem('bearerTokenValidade');
     if (token && validade && Date.now() < parseInt(validade) * 1000) {
       setShowFullPhone(!showFullPhone);
@@ -30,7 +31,7 @@ export default function CenaPrestadorDetalhe(props) {
       Alert.alert('Atenção', 'Você precisa estar logado para poder ver o telefone do prestador de serviços.', [
         { text: 'OK', onPress: () => console.log('OK Pressed') },
       ]);
-    }
+    }*/
   };
 
   const openAvaliar = () => {
@@ -44,6 +45,23 @@ export default function CenaPrestadorDetalhe(props) {
       })
     );
   };
+
+  const openWpp = async (number) =>{
+    const message = '';
+    const whatsappUrl = `whatsapp://send?phone=+55${number}&text=${encodeURIComponent(message)}`;
+  
+    try {
+      const supported = await Linking.canOpenURL(whatsappUrl);
+  
+      if (supported) {
+        await Linking.openURL(whatsappUrl);
+      } else {
+        Alert.alert("Erro", "WhatsApp não está instalado");
+      }
+    } catch (error) {
+      console.error('Não foi possível abrir o WhatsApp', error);
+    }
+  }
 
   const salvaVisita = () => {
     dispatch({
@@ -72,27 +90,25 @@ export default function CenaPrestadorDetalhe(props) {
         <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 8 }}>
         {serviceProvider.name}
         </Text>
-        <Text style={GlobalStyle.textBlack}>Email: {serviceProvider.email}</Text>
         <View  style={{ justifyContent: 'space-between', flexDirection: 'row'}}>
+          <TouchableWithoutFeedback onPress={()=>{
+            if ( showFullPhone ) {
+              openWpp(formattedPhone);
+            }
+          }}>
             <Text style={[GlobalStyle.textBlack, { verticalAlign: 'middle'}]}>
                 Telefone: {formattedPhone}
             </Text>
-            {!showFullPhone && (
-            <Button
-                title="Ver telefone completo"
-                onPress={handleShowFullPhone}
-                buttonStyle={{ paddingHorizontal: 0, paddingVertical: 0 }}
-                type="clear"
-            />
-            )}
+          </TouchableWithoutFeedback>
+          {!showFullPhone && (
+          <Button
+              title="Ver telefone completo"
+              onPress={handleShowFullPhone}
+              buttonStyle={{ paddingHorizontal: 0, paddingVertical: 0 }}
+              type="clear"
+          />
+          )}
         </View>
-        <Text style={GlobalStyle.textBlack}>Endereço: {serviceProvider.address}</Text>
-        <Text style={GlobalStyle.textBlack}>Número: {serviceProvider.address_number}</Text>
-        <Text style={GlobalStyle.textBlack}>Complemento: {serviceProvider.address_complement}</Text>
-        <Text style={GlobalStyle.textBlack}>Cidade: {serviceProvider.city}</Text>
-        <Text style={GlobalStyle.textBlack}>Estado: {serviceProvider.state}</Text>
-        <Text style={GlobalStyle.textBlack}>CEP: {serviceProvider.postal_code}</Text>
-        <Text style={GlobalStyle.textBlack}>Bairro: {serviceProvider.neighborhood}</Text>
     </View>
     <View style={{ paddingHorizontal: 16, paddingTop: 16 }}>
         <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 8 }}>

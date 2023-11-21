@@ -15,7 +15,7 @@ const cadastroSchema = yup.object().shape({
     service_provider: yup.object().shape({
       name: yup.string().required('Nome do prestador é obrigatório'),
       email: yup.string().email('Digite um e-mail válido').required('E-mail do prestador é obrigatório'),
-      phone: yup.string().required('Telefone do prestador é obrigatório'),
+      phone: yup.string().required('Telefone é obrigatório').min(15, 'Telefone deve ter no mínimo 15 caracteres.').max(15, 'Telefone deve ter no máximo 15 caracteres.'),
       address: yup.string().required('Endereço é obrigatório'),
       address_number: yup.string().required('Número do endereço é obrigatório'),
       address_complement: yup.string(),

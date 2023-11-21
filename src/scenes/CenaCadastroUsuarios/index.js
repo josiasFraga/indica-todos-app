@@ -17,7 +17,7 @@ const cadastroSchema = yup.object().shape({
   confirmPassword: yup.string()
   .oneOf([yup.ref('password'), null], 'As senhas não coincidem')
   .required('A confirmação de senha é obrigatória'),
-  phone: yup.string().required('Telefone é obrigatório'),
+  phone: yup.string().required('Telefone é obrigatório').min(15, 'Telefone deve ter no mínimo 15 caracteres.').max(15, 'Telefone deve ter no máximo 15 caracteres.'),
 });
 
 

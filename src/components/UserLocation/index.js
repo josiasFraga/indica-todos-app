@@ -8,6 +8,10 @@ import { Icon } from 'react-native-elements';
 import COLORS from '@constants/colors';
 import { StackActions, CommonActions, useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
+import Geolocation from '@react-native-community/geolocation';
+import axios from 'axios';
+
+const GOOGLE_MAPS_API_KEY = 'AIzaSyCO0jm3bxxMZFx1M03BH5v2zKOTPXe-pjk'; // Substitua com sua chave da API do Google Maps
 
 export default function UserLocation () {
     const navigation = useNavigation();
@@ -15,19 +19,66 @@ export default function UserLocation () {
 
     const user_location = useSelector(state => state.appReducer.user_location);
 
-
     const openChooseLocation = () => {
-
         navigation.navigate('SelecionaLocalizacao');
+
     }
 
     React.useEffect(()=>{
         dispatch({
             type: 'LOAD_USER_LOCATION',
-            payload: {},
+            payload: {
+                callbackNotFind: getUserLocation
+            },
         });
         
     },[]);
+
+    const getUserLocation = () => {
+        Geolocation.getCurrentPosition(
+            async (position) => {
+              const { latitude, longitude } = position.coords;
+              const location = await getCityAndStateFromCoordinates(latitude, longitude);
+              if (location) {
+
+                  console.log(location);
+                  
+                  dispatch({
+                      type: 'SAVE_USER_LOCATION',
+                      payload: {
+                          submitValues: {
+                              city: location.city,
+                              state: location.state,
+                          },
+                          callback_success: () => {
+                              dispatch({
+                                  type: 'LOAD_USER_LOCATION',
+                                  payload: {},
+                              });
+                          }
+                      }
+                  });
+              }
+            },
+            (error) => console.error(error),
+            { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+          );
+    }
+
+
+    const getCityAndStateFromCoordinates = async (latitude, longitude) => {
+      try {
+        const response = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${GOOGLE_MAPS_API_KEY}`);
+        const addressComponents = response.data.results[0].address_components;
+        const city = addressComponents.find(component => component.types.includes('locality')).long_name;
+        const state = addressComponents.find(component => component.types.includes('administrative_area_level_1')).short_name;
+        return { city, state };
+      } catch (error) {
+        console.error(error);
+        return null;
+      }
+    
+    };
 
 
     return (
