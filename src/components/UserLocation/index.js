@@ -40,8 +40,6 @@ export default function UserLocation () {
               const { latitude, longitude } = position.coords;
               const location = await getCityAndStateFromCoordinates(latitude, longitude);
               if (location) {
-
-                  console.log(location);
                   
                   dispatch({
                       type: 'SAVE_USER_LOCATION',
@@ -70,8 +68,16 @@ export default function UserLocation () {
       try {
         const response = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${GOOGLE_MAPS_API_KEY}`);
         const addressComponents = response.data.results[0].address_components;
-        const city = addressComponents.find(component => component.types.includes('locality')).long_name;
-        const state = addressComponents.find(component => component.types.includes('administrative_area_level_1')).short_name;
+
+        let city = addressComponents.find(component => component.types.includes('locality'));
+        let state = addressComponents.find(component => component.types.includes('administrative_area_level_1')).short_name;
+
+        if ( !city ) {
+            city = addressComponents.find(component => component.types.includes('administrative_area_level_2'));
+        }
+
+        city = city.long_name;
+
         return { city, state };
       } catch (error) {
         console.error(error);
