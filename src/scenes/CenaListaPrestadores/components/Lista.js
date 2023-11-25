@@ -15,12 +15,16 @@ function Lista (props) {
 
     const service_providers = useSelector(state => state.appReducer.service_providers);
     const service_providers_loading = useSelector(state => state.appReducer.service_providers_loading);
+    const user_location = useSelector(state => state.appReducer.user_location);
     const categoria_id = props.categoria_id;
 
     const loadItems = () => {
+        console.log(user_location);
         let filters = {
             categoria_id: categoria_id,
-            subcategorias_ids: props.subcategorias_ids.join(',')
+            subcategorias_ids: props.subcategorias_ids.join(','),
+            city: user_location.city,
+            state: user_location.state,
         };
     
         dispatch({

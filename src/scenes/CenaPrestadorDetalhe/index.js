@@ -1,10 +1,9 @@
 import React from 'react';
 import { View, Text, ScrollView, Alert, StyleSheet, Linking, TouchableWithoutFeedback } from 'react-native';
-import { ListItem, Button, Tab, TabView, Rating, Avatar, Card  } from 'react-native-elements';
+import { ListItem, Button, Tab, TabView, Rating, Avatar, Card, Icon } from 'react-native-elements';
 import Header from "@components/Header";
 import COLORS from '@constants/colors';
 import { useDispatch, useSelector } from 'react-redux';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { CommonActions, useNavigation } from '@react-navigation/native';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -17,7 +16,7 @@ export default function CenaPrestadorDetalhe(props) {
 
   const serviceProvider = props.route.params.item;
 
-  const [showFullPhone, setShowFullPhone] = React.useState(false);
+  const [showFullPhone, setShowFullPhone] = React.useState(true);
   const [index, setIndex] = React.useState(0);
   const reviews = useSelector((state) => state.appReducer.reviews);
 
@@ -96,9 +95,16 @@ export default function CenaPrestadorDetalhe(props) {
               openWpp(formattedPhone);
             }
           }}>
-            <Text style={[GlobalStyle.textBlack, { verticalAlign: 'middle'}]}>
-                Telefone: {formattedPhone}
-            </Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Text style={[GlobalStyle.textBlack, { verticalAlign: 'middle', marginRight: 8}]}>Telefone:</Text>
+              <Icon
+                  name="whatsapp"
+                  size={18}
+                  type='font-awesome'
+                  color="#000000"
+              />
+              <Text style={[GlobalStyle.textBlack, { marginLeft: 3 }]}>{formattedPhone}</Text>
+            </View>            
           </TouchableWithoutFeedback>
           {!showFullPhone && (
           <Button
@@ -109,6 +115,8 @@ export default function CenaPrestadorDetalhe(props) {
           />
           )}
         </View>
+        <Text style={GlobalStyle.textBlack}>CEP: {serviceProvider.postal_code}</Text>
+        <Text style={GlobalStyle.textBlack}>Bairro: {serviceProvider.neighborhood}</Text>
     </View>
     <View style={{ paddingHorizontal: 16, paddingTop: 16 }}>
         <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 8 }}>
