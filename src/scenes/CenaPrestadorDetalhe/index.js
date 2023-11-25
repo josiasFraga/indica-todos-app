@@ -45,18 +45,14 @@ export default function CenaPrestadorDetalhe(props) {
     );
   };
 
-  const openWpp = async (number) =>{
-    const message = '';
-    const whatsappUrl = `whatsapp://send?phone=+55${number.replace(/\D/g,'')}&text=${encodeURIComponent(message)}`;
+  const openWpp = (number) =>{
+
+    const message = "";
+    const whatsappUrl = `https://api.whatsapp.com/send?phone=+55${number.replace(/\D/g,'')}&text=${encodeURIComponent(message)}`;    
   
     try {
-      const supported = await Linking.canOpenURL(whatsappUrl);
-  
-      if (supported) {
-        await Linking.openURL(whatsappUrl);
-      } else {
-        Alert.alert("Erro", "WhatsApp não está instalado");
-      }
+      Linking.openURL(whatsappUrl)
+
     } catch (error) {
       console.error('Não foi possível abrir o WhatsApp', error);
     }
