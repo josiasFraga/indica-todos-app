@@ -1,18 +1,21 @@
 import React from 'react';
-import { View, Text, ScrollView, Alert, StyleSheet, Linking, TouchableWithoutFeedback } from 'react-native';
-import { ListItem, Button, Tab, TabView, Rating, Avatar, Card, Icon } from 'react-native-elements';
+import { View, Text, StyleSheet, Linking, useWindowDimensions, TouchableHighlight } from 'react-native';
+import { ListItem, Button, Tab, Rating, Avatar, Card, Icon } from 'react-native-elements';
 import Header from "@components/Header";
 import COLORS from '@constants/colors';
 import { useDispatch, useSelector } from 'react-redux';
 import { CommonActions, useNavigation } from '@react-navigation/native';
+import { TabView, SceneMap } from 'react-native-tab-view'
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import CONFIG from '@constants/configs';
 import GlobalStyle from '@styles/global';
 
+
 export default function CenaPrestadorDetalhe(props) {
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  const layout = useWindowDimensions();
 
   const serviceProvider = props.route.params.item;
 
@@ -20,18 +23,11 @@ export default function CenaPrestadorDetalhe(props) {
   const [index, setIndex] = React.useState(0);
   const reviews = useSelector((state) => state.appReducer.reviews);
 
-  const handleShowFullPhone = async () => {
-    setShowFullPhone(!showFullPhone);
-    /*const token = await AsyncStorage.getItem('bearerToken');
-    const validade = await AsyncStorage.getItem('bearerTokenValidade');
-    if (token && validade && Date.now() < parseInt(validade) * 1000) {
-      setShowFullPhone(!showFullPhone);
-    } else {
-      Alert.alert('Atenção', 'Você precisa estar logado para poder ver o telefone do prestador de serviços.', [
-        { text: 'OK', onPress: () => console.log('OK Pressed') },
-      ]);
-    }*/
-  };
+  const [routes] = React.useState([
+    { key: 'first', title: 'Dados' },
+    { key: 'second', title: 'Avaliações' },
+  ]);
+
 
   const openAvaliar = () => {
     navigation.dispatch(
@@ -48,7 +44,7 @@ export default function CenaPrestadorDetalhe(props) {
   const openWpp = (number) =>{
 
     const message = "";
-    const whatsappUrl = `https://api.whatsapp.com/send?phone=+55${number.replace(/\D/g,'')}&text=${encodeURIComponent(message)}`;    
+    const whatsappUrl = `https://api.whatsapp.com/send?phone=+55${number.replace(/\D/g,'')}&text=${encodeURIComponent(message)}`;
   
     try {
       Linking.openURL(whatsappUrl)
@@ -56,6 +52,11 @@ export default function CenaPrestadorDetalhe(props) {
     } catch (error) {
       console.error('Não foi possível abrir o WhatsApp', error);
     }
+  }
+
+  const openPhoneCall = (number) => {
+    Linking.openURL(`tel:${number.replace(/\D/g,'')}`)
+    .catch(err => console.error('An error occurred', err));
   }
 
   const salvaVisita = () => {
@@ -77,40 +78,85 @@ export default function CenaPrestadorDetalhe(props) {
     });
   }
 
+  const renderTabBar = props => (
+    <View style={{ flexDirection: 'row' }}>
+      {props.navigationState.routes.map((route, i) => {
+        const isActive = props.navigationState.index === i;
+        const color = isActive ? '#f7f7f7' : COLORS.secondary;
+        const backgroundColor = COLORS.primary;
+        const underlayColor = '#B3749F'; // Cor de fundo ao clicar no botão
+  
+        // Estilos para a linha abaixo do item ativo
+        const borderBottomColor = isActive ? '#FFFFFF' : backgroundColor;
+        const borderBottomWidth = isActive ? 2 : 0;
+  
+        return (
+          <TouchableHighlight
+            key={i}
+            underlayColor={underlayColor}
+            style={{ 
+              flex: 1,
+              backgroundColor,
+              justifyContent: 'center',
+              alignItems: 'center',
+              paddingVertical: 7,
+              borderBottomColor,
+              borderBottomWidth
+            }}
+            onPress={() => setIndex(i)}>
+            <Text style={{ color, fontWeight: 'bold', fontSize: 16 }}>{route.title}</Text>
+          </TouchableHighlight>
+        );
+      })}
+    </View>
+  );
+
   const formattedPhone = showFullPhone ? serviceProvider.phone : `${serviceProvider.phone.slice(0, 9)}...`;
 
   const TabDadosPrestador = () => (
-    <ScrollView style={{flex: 1}}>
+    <>
     <View style={{ paddingHorizontal: 16, paddingTop: 16 }}>
         <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 8 }}>
         {serviceProvider.name}
         </Text>
-        <View  style={{ justifyContent: 'space-between', flexDirection: 'row'}}>
-          <TouchableWithoutFeedback onPress={()=>{
-            if ( showFullPhone ) {
-              openWpp(formattedPhone);
-            }
-          }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <Text style={[GlobalStyle.textBlack, { verticalAlign: 'middle', marginRight: 8}]}>Telefone:</Text>
-              <Icon
+
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Text style={[GlobalStyle.textBlack, { verticalAlign: 'middle', marginRight: 8}]}>Telefone:</Text>
+  
+            <Text style={[GlobalStyle.textBlack, { marginLeft: 3 }]}>{formattedPhone}</Text>
+          </View>
+          <View style={GlobalStyle.row}>
+            <Button
+              icon={
+                <Icon
+                  name="phone"
+                  size={18}
+                  type='font-awesome'
+                  color="#FFF"
+                />
+              }
+              iconRight
+              buttonStyle={{backgroundColor: COLORS.primary}}
+              onPress={()=> openPhoneCall(formattedPhone)}
+            />
+            <Button
+              icon={
+                <Icon
                   name="whatsapp"
                   size={18}
                   type='font-awesome'
-                  color="#000000"
-              />
-              <Text style={[GlobalStyle.textBlack, { marginLeft: 3 }]}>{formattedPhone}</Text>
-            </View>            
-          </TouchableWithoutFeedback>
-          {!showFullPhone && (
-          <Button
-              title="Ver telefone completo"
-              onPress={handleShowFullPhone}
-              buttonStyle={{ paddingHorizontal: 0, paddingVertical: 0 }}
-              type="clear"
-          />
-          )}
+                  color="#FFF"
+                />
+              }
+              iconRight
+              buttonStyle={{backgroundColor: COLORS.primary, marginRight: 10}}
+              onPress={()=> openWpp(formattedPhone)}
+            />
+          </View>
         </View>
+
+   
         <Text style={GlobalStyle.textBlack}>CEP: {serviceProvider.postal_code}</Text>
         <Text style={GlobalStyle.textBlack}>Bairro: {serviceProvider.neighborhood}</Text>
     </View>
@@ -136,11 +182,11 @@ export default function CenaPrestadorDetalhe(props) {
             disabled={false}
         />
     </View>
-    </ScrollView>
+    </>
   );
 
   const TabAvaliacoes = () => (
-    <ScrollView style={{flex: 1}}>
+    <>
     <View style={{ paddingTop: 16, flex: 1 }}>
         <View style={{paddingHorizontal: 16}}>
             <Text style={{ fontSize: 18, fontWeight: 'bold'}}>Avaliações</Text>
@@ -175,15 +221,21 @@ export default function CenaPrestadorDetalhe(props) {
       )
     })}
   </View>
-  </ScrollView>
+  </>
   );
+
+  
+  const renderScene = SceneMap({
+    first: TabDadosPrestador,
+    second: TabAvaliacoes,
+  });
 
   React.useEffect(() => {
     salvaVisita();
     carregaAvaliacoes();
   }, []);
 
-  return (
+  return  (
     <View style={{ flex: 1 }}>
       <Header
         titulo={serviceProvider.name}
@@ -192,22 +244,18 @@ export default function CenaPrestadorDetalhe(props) {
         backButton={true}
         iconColor={'#f7f7f7'}
       />
-
-        <Tab value={index} onChange={setIndex}  indicatorStyle={{backgroundColor: '#f7f7f7'}}>
-            <Tab.Item title="Dados" titleStyle={index == 0 ? {color: '#f7f7f7'} : {color: COLORS.secondary}} containerStyle={{backgroundColor: COLORS.primary}} />
-            <Tab.Item title="Avaliações" titleStyle={index == 1 ? {color: '#f7f7f7'} : {color: COLORS.secondary}} containerStyle={{backgroundColor: COLORS.primary}} />
-        </Tab>
-
-        <TabView value={index} onChange={setIndex} >
-            <TabView.Item style={{ width: '100%', flex: 1 }}>
-                <TabDadosPrestador />
-            </TabView.Item>
-            <TabView.Item style={{ width: '100%', flex: 1 }}>
-                <TabAvaliacoes />
-            </TabView.Item>
-        </TabView>
+      <TabView
+        navigationState={{ index, routes }}
+        renderScene={renderScene}
+        onIndexChange={setIndex}
+        initialLayout={{ width: layout.width }}
+        scrollEnabled
+        tabStyle={{}}
+        renderTabBar={renderTabBar}
+      />
     </View>
-  );
+  )
+
 }
 
 const styles = StyleSheet.create({
