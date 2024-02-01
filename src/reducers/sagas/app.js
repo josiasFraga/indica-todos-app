@@ -1002,6 +1002,102 @@ function* saveProfilePhoto({payload}) {
 	}
 }
 
+function* savePhotoGallery({payload}) {
+
+	const networkStatus = yield NetInfo.fetch();
+	
+	if ( !networkStatus.isConnected ) {
+		yield AlertHelper.show(
+			'warn',
+			'Sem conexão',
+			'Você está sem conexão com a internet.',
+		  );
+		  return true;
+	}
+
+	console.log('[SAGA] - ENVIADO FOTO PARA A GALERIA');
+	var { photo } = payload;
+	
+	let data = new FormData();
+	data.append('photo', photo);
+
+	try {
+		const response = yield call(callApi, { 
+			endpoint: CONFIG.url+'/service-provider-photos/upload.json',
+			method: 'POST',
+			data: data,
+			headers: {
+				'content-type': 'multipart/form-data',
+			},
+		});
+
+		console.log('[SAGA] - [ENVIANDO FOTO PARA GALERIA]', response);
+
+		if ( response.data.status == 'ok' ) {
+		
+			yield AlertHelper.show('success', 'Tudo certo', 'Sua foto foi enviada com sucesso!');
+			yield payload.callback_success();
+		} else {
+
+			yield AlertHelper.show('error', 'Erro',  response.data.message);
+		}
+
+	} catch ({message, response}) {
+		if (response.data && response.data.code == 401) {
+			yield logout({payload: {}});
+		} else {
+			console.error('[SAGA] - [ENVIANDO FOTO PARA A GALERIA]', { message, response });
+			yield AlertHelper.show('error', 'Erro', message);
+			
+		}
+	}
+}
+
+function* deletePhotoGallery({payload}) {
+
+	const networkStatus = yield NetInfo.fetch();
+	
+	if ( !networkStatus.isConnected ) {
+		yield AlertHelper.show(
+			'warn',
+			'Sem conexão',
+			'Você está sem conexão com a internet.',
+		  );
+		  return true;
+	}
+
+	console.log('[SAGA] - EXCLUINDO FOTO DA GALERIA');
+	var { id } = payload;
+	
+
+	try {
+		const response = yield call(callApi, { 
+			endpoint: CONFIG.url+'/service-provider-photos/delete/' + id + '.json',
+			method: 'DELETE'
+		});
+
+		console.log('[SAGA] - [EXCLUINDO FOTO DA GALERIA]', response);
+
+		if ( response.data.status == 'ok' ) {
+		
+			yield AlertHelper.show('success', 'Tudo certo', 'Sua imagem foi removida com sucesso!');
+			yield payload.callback_success();
+		} else {
+
+			yield AlertHelper.show('error', 'Erro',  response.data.message);
+		}
+
+	} catch ({message, response}) {
+		if (response.data && response.data.code == 401) {
+			yield logout({payload: {}});
+		} else {
+			console.error('[SAGA] - [EXCLUINDO FOTO DA GALERIA]', { message, response });
+			yield AlertHelper.show('error', 'Erro', message);
+			
+		}
+	}
+}
+
 function* loadMeasurementUnits({payload}) {
 
 	console.log('carregando unidades de medida');
@@ -1629,6 +1725,9 @@ export default function* () {
 	yield takeLatest('LOAD_USER_DATA', loadUserData);
 	yield takeLatest('CHANGE_PASSWORD', changePassword);
 	yield takeLatest('SAVE_PROFILE_PHOTO', saveProfilePhoto);
+	yield takeLatest('SAVE_PHOTO_GALLERY', savePhotoGallery);
+	yield takeLatest('DELETE_PHOTO_GALLERY', deletePhotoGallery);
+	
 	yield takeLatest('LOGOUT', logout);
 	yield takeLatest('LOAD_MEASUREMENT_UNITS', loadMeasurementUnits);
 	yield takeLatest('END_REGISTER_TRIGGER', endRegisterTrigger);

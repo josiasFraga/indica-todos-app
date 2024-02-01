@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Linking, useWindowDimensions, TouchableHighlight } from 'react-native';
+import { View, Text, StyleSheet, Linking, useWindowDimensions, TouchableHighlight, ScrollView } from 'react-native';
 import { ListItem, Button, Tab, Rating, Avatar, Card, Icon } from 'react-native-elements';
 import Header from "@components/Header";
 import COLORS from '@constants/colors';
@@ -10,6 +10,7 @@ import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import CONFIG from '@constants/configs';
 import GlobalStyle from '@styles/global';
+import PhotoGallery from './components/PhotoGallery';
 
 
 export default function CenaPrestadorDetalhe(props) {
@@ -114,7 +115,7 @@ export default function CenaPrestadorDetalhe(props) {
   const formattedPhone = showFullPhone ? serviceProvider.phone : `${serviceProvider.phone.slice(0, 9)}...`;
 
   const TabDadosPrestador = () => (
-    <>
+    <ScrollView style={{flex: 1}}>
     <View style={{ paddingHorizontal: 16, paddingTop: 16 }}>
         <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 8 }}>
         {serviceProvider.name}
@@ -154,12 +155,11 @@ export default function CenaPrestadorDetalhe(props) {
               onPress={()=> openWpp(formattedPhone)}
             />
           </View>
-        </View>
-
-   
+        </View>   
         <Text style={GlobalStyle.textBlack}>CEP: {serviceProvider.postal_code}</Text>
         <Text style={GlobalStyle.textBlack}>Bairro: {serviceProvider.neighborhood}</Text>
     </View>
+  
     <View style={{ paddingHorizontal: 16, paddingTop: 16 }}>
         <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 8 }}>
         Serviços Prestados
@@ -173,6 +173,20 @@ export default function CenaPrestadorDetalhe(props) {
         </ListItem>
         ))}
     </View>
+  
+    <View style={{ paddingHorizontal: 16, paddingTop: 16 }}>
+        <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 8 }}>
+          Galeria de Fotos
+        </Text>
+
+        <View style={styles.cardContainerTwo}>
+          <PhotoGallery 
+            ServiceProviderId={serviceProvider.id}
+          />
+        </View>
+  
+    </View>
+  
     <View style={{ paddingHorizontal: 16, paddingTop: 16 }}>
         <Button
             titleStyle={{}}
@@ -182,7 +196,7 @@ export default function CenaPrestadorDetalhe(props) {
             disabled={false}
         />
     </View>
-    </>
+    </ScrollView>
   );
 
   const TabAvaliacoes = () => (
@@ -191,6 +205,9 @@ export default function CenaPrestadorDetalhe(props) {
         <View style={{paddingHorizontal: 16}}>
             <Text style={{ fontSize: 18, fontWeight: 'bold'}}>Avaliações</Text>
         </View>
+    {
+      reviews.length == 0 && <View style={styles.emptyListText}><Text>Nenhuma avaliação encontrada.</Text></View>
+    }
     {reviews.map((review) => {
 
       return(
@@ -252,6 +269,7 @@ export default function CenaPrestadorDetalhe(props) {
         scrollEnabled
         tabStyle={{}}
         renderTabBar={renderTabBar}
+        swipeEnabled={false}
       />
     </View>
   )
@@ -263,6 +281,14 @@ const styles = StyleSheet.create({
       borderRadius: 8,
       paddingBottom: 10,
       elevation: 2, // Adicione sombra ao card (opcional)
+    },
+    cardContainerTwo: {
+      backgroundColor: '#ffffff',
+      borderRadius: 0,
+      paddingBottom: 0,
+      elevation: 0, // Adicione sombra ao card (opcional)
+      borderBottomWidth: 0.5,
+      borderBottomColor: "#999"
     },
     reviewHeader: {
       flexDirection: 'row',
@@ -283,5 +309,13 @@ const styles = StyleSheet.create({
       color: '#555',
       fontStyle: 'italic', // Define o estilo do texto como itálico
       marginTop: 8, // Adiciona um espaçamento acima do comentário
-    },
+    }, 
+    emptyListText: {
+      textAlign: "center",
+      flexDirection: 'column',
+      alignContent: 'center',
+      alignItems: 'center',
+      marginTop: 50,
+      marginBottom: 50
+    }
   });

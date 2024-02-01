@@ -4,21 +4,17 @@ import {
   StyleSheet,
   FlatList,
   TouchableOpacity,
-  Image,
+  Alert
 } from "react-native";
 import { Button, Card, Icon, Text } from "react-native-elements";
 import Header from "@components/Header";
 import COLORS from "@constants/colors";
 import { useDispatch, useSelector } from "react-redux";
-import { CommonActions, useNavigation } from "@react-navigation/native";
 import ImageView from "react-native-image-viewing";
-
-import CONFIG from "@constants/configs";
-import GlobalStyle from "@styles/global";
+import ModalChooseOrSendPhoto from '@components/Modals/ModalChooseOrSendPhoto';
 
 export default function CenaGaleriaFotos(props) {
   const dispatch = useDispatch();
-  const navigation = useNavigation();
 
   const photo_gallery = useSelector((state) => state.appReducer.photo_gallery);
   const photo_gallery_loading = useSelector(
@@ -26,16 +22,25 @@ export default function CenaGaleriaFotos(props) {
   );
   const [isViewerVisible, setIsViewerVisible] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [modalPhotoVisible, setModalPhotoVisible] = useState(false);
 
-  const handleSendPhoto = () => {
+  const callbackBeforeChooseImage = () => {
+
+  }
+
+  const callbackAfterChooseImage = (source) => {
+
+    setModalPhotoVisible(false);
     dispatch({
-      type: "SAVE_VISIT",
+      type: 'SAVE_PHOTO_GALLERY',
       payload: {
-        service_provider_id: serviceProvider.id,
-        phone_clicked: showFullPhone ? "Y" : "N",
-      },
+        photo: source,
+        callback_success: () => {
+          carregaFotos();
+        }
+      }
     });
-  };
+  }
 
   const carregaFotos = () => {
     dispatch({
@@ -44,11 +49,38 @@ export default function CenaGaleriaFotos(props) {
     });
   };
 
+  const excluiFoto = (photoId) => {
+    Alert.alert(
+      "Excluir Imagem",
+      "Tem certeza que deseja excluir esta imagem?",
+      [
+        { text: "Cancelar" },
+        {
+          text: "Excluir",
+          onPress: () => {
+            dispatch({
+              type: "DELETE_PHOTO_GALLERY",
+              payload: { 
+                id: photoId,
+                callback_success: () => {
+                  carregaFotos();
+                }
+              },
+            });            
+          },
+        },
+      ]
+    );
+
+  };
+
   useEffect(() => {
     carregaFotos();
   }, []);
 
   const images = photo_gallery.map((photo) => ({ uri: photo.photo }));
+
+  console.log(images);
 
   return (
     <View style={styles.container}>
@@ -59,37 +91,51 @@ export default function CenaGaleriaFotos(props) {
         backButton={true}
         iconColor={"#f7f7f7"}
       />
+  
       <FlatList
         data={photo_gallery}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item, index }) => (
-          <TouchableOpacity
-            onPress={() => {
-              setCurrentImageIndex(index);
-              setIsViewerVisible(true);
-            }}
-          >
-            <Card>
-              <Card.Image source={{ uri: item.imageUrl }} />
-            </Card>
-          </TouchableOpacity>
+          <View style={styles.itemContainer}>
+            <TouchableOpacity
+              onPress={() => {
+                setCurrentImageIndex(index);
+                setIsViewerVisible(true);
+              }}
+              style={styles.photoContainer}
+            >
+              <Card containerStyle={{padding: 5}}>
+                <Card.Image source={{ uri: item.photo }} />
+              </Card>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => excluiFoto(item.id)}
+              style={styles.deleteButton}
+            >
+              <Icon
+                name="delete"
+                type="material"
+                color="#ffffff" // Altera a cor do ícone para branco para contraste
+                size={20}
+              />
+            </TouchableOpacity>
+          </View>
         )}
+        numColumns={2}
         ListEmptyComponent={() => (
-          <Text style={{ textAlign: "center", marginTop: 50 }}>
+          <Text style={styles.emptyListText}>
             Nenhuma imagem cadastrada.
           </Text>
         )}
         refreshing={photo_gallery_loading}
+        onRefresh={carregaFotos}
       />
 
       <Button
         title="Enviar Foto"
-        onPress={handleSendPhoto}
-        disabled={photo_gallery.length >= 10}
+        onPress={() => setModalPhotoVisible(true)}
+        disabled={photo_gallery.length >= 5 || photo_gallery_loading}
         buttonStyle={styles.sendButton}
-        onRefresh={() => {
-          carregaFotos();
-        }}
         icon={
           <Icon
             name="cloud-upload"
@@ -108,6 +154,13 @@ export default function CenaGaleriaFotos(props) {
         visible={isViewerVisible}
         onRequestClose={() => setIsViewerVisible(false)}
       />
+
+      <ModalChooseOrSendPhoto 
+        visible={modalPhotoVisible}
+        setModalVisible={setModalPhotoVisible}
+        callbackBeforeChooseImage={callbackBeforeChooseImage}
+        callbackAfterChooseImage={callbackAfterChooseImage}
+      />
     </View>
   );
 }
@@ -115,10 +168,40 @@ export default function CenaGaleriaFotos(props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
+  },
+  itemContainer: {
+    flexDirection: "column",
+    margin: 4,
+    flex: 1 / 2, // Divide o espaço igualmente para 2 colunas
+  },
+  photoContainer: {
+    flex: 1,
+  },
+  deleteButton: {
+    position: "absolute",
+    right: 10,
+    top: 10,
+    backgroundColor: COLORS.primary, // Usa a cor de perigo para indicar ação de exclusão
+    width: 40, // Define um tamanho fixo para o botão
+    height: 40, // Define um tamanho fixo para o botão
+    borderRadius: 20, // Arredonda completamente o botão para torná-lo circular
+    justifyContent: 'center', // Centraliza o ícone verticalmente
+    alignItems: 'center', // Centraliza o ícone horizontalmente
+    shadowColor: "#000", // Adiciona sombra para um efeito de elevação
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.22,
+    shadowRadius: 2.22,
+    elevation: 3, // Efeito de elevação para Android
   },
   sendButton: {
     margin: 10,
     backgroundColor: COLORS.primary,
+  },
+  emptyListText: {
+    textAlign: "center",
+    marginTop: 50,
   },
 });
