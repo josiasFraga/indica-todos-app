@@ -28,9 +28,7 @@ export default function PhotoGallery(props) {
     dispatch({
       type: "LOAD_PHOTO_GALLERY",
       payload: {
-        params: {
-            service_provider_id: ServiceProviderId
-        }
+        service_provider_id: ServiceProviderId
       },
     });
   };
