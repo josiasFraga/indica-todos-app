@@ -31,6 +31,8 @@ const INITIAL_STATE = {
  is_services_loading: false,
  reviews: [],
  is_reviews_loading: false,
+ photo_gallery: [],
+ is_photo_gallery_loading: false
 };
 
 export const appReducer = (state = INITIAL_STATE, action) => {
@@ -119,6 +121,13 @@ export const appReducer = (state = INITIAL_STATE, action) => {
 		return {...state, reviews: action.payload, is_reviews_loading: false };
     case 'LOAD_REVIEWS_FAILED':
 		return {...state, reviews: [], is_reviews_loading: false}; 
+
+    case 'LOAD_PHOTO_GALLERY':
+		return {...state, photo_gallery: [], is_photo_gallery_loading: true};
+    case 'LOAD_PHOTO_GALLERY_SUCCESS':
+		return {...state, photo_gallery: action.payload, is_photo_gallery_loading: false };
+    case 'LOAD_PHOTO_GALLERY_FAILED':
+		return {...state, photo_gallery: [], is_photo_gallery_loading: false}; 
     
     default:
 		return state;

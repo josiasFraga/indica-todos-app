@@ -13,7 +13,7 @@ import AlertHelper from '@components/Alert/AlertHelper';
 const cadastroSchema = yup.object().shape({
   name: yup.string().required('Nome é obrigatório'),
   email: yup.string().email('Digite um e-mail válido').required('E-mail é obrigatório'),
-  password: yup.string().required('Senha é obrigatória'),
+  password: yup.string().min(6, 'Senha deve ter no mínimo 6 caracteres').required('Senha é obrigatória'),
   confirmPassword: yup.string()
   .oneOf([yup.ref('password'), null], 'As senhas não coincidem')
   .required('A confirmação de senha é obrigatória'),

@@ -17,6 +17,15 @@ export default function MenusPrestador () {
         );
     }
 
+    const goToGalley = () => {
+
+      navigation.dispatch(
+          CommonActions.navigate({
+              name: 'GaleriaFotos'
+          })
+      );
+    }
+
     const goToServices = () => {
 
         navigation.dispatch(
@@ -43,6 +52,15 @@ export default function MenusPrestador () {
           loading: false,
           onPress: () => {
             goToServices();
+          }
+        },
+
+        {
+          name: 'Galeria de Fotos',
+          subtitle: '',
+          loading: false,
+          onPress: () => {
+            goToGalley();
           }
         },
     ];
