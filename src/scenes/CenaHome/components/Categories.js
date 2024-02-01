@@ -5,7 +5,8 @@ import {
     FlatList,
     Text,
     ImageBackground,
-    TouchableWithoutFeedback
+    TouchableWithoutFeedback,
+    TextInput 
 } from 'react-native';
 import { StackActions, CommonActions, useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
@@ -18,6 +19,13 @@ function Categories (props) {
     const service_categories = useSelector(state => state.appReducer.service_categories);
     const service_categories_loading = useSelector(state => state.appReducer.service_categories_loading);
     const user_location = useSelector(state => state.appReducer.user_location);
+    const [searchTerm, setSearchTerm] = React.useState('');
+
+    const filteredCategories = searchTerm
+    ? service_categories.filter(category =>
+          category.name.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    : service_categories;
 
     const buscaItens = () => {
 
@@ -70,8 +78,14 @@ function Categories (props) {
 
 	return (
 		<View style={[styles.container]}>
+            <TextInput
+                style={styles.searchInput}
+                placeholder="Pesquisar categorias..."
+                value={searchTerm}
+                onChangeText={text => setSearchTerm(text)}
+            />
             <FlatList
-                data={service_categories}
+                data={filteredCategories}
                 renderItem={renderItem}
                 onRefresh={buscaItens}
                 keyExtractor={item => item.id}
@@ -118,7 +132,12 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlignVertical: 'center',
         display: 'flex'
-    }
+    },
+    searchInput: {
+        height: 40,
+        margin: 10,
+        borderRadius: 5,
+    },
 });
 
 export default Categories;
