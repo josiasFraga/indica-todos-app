@@ -8,8 +8,9 @@ import {
     TouchableWithoutFeedback,
     TextInput 
 } from 'react-native';
-import { StackActions, CommonActions, useNavigation } from '@react-navigation/native';
+import { CommonActions, useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
+import FilterNeighborhoods from "./FilterNeighborhoods";
 
 
 function Categories (props) {
@@ -20,6 +21,7 @@ function Categories (props) {
     const service_categories_loading = useSelector(state => state.appReducer.service_categories_loading);
     const user_location = useSelector(state => state.appReducer.user_location);
     const [searchTerm, setSearchTerm] = React.useState('');
+    const [neighborhoodsSelecteds, setNeighborhoodsSelecteds] = React.useState('');
 
     const filteredCategories = searchTerm
     ? service_categories.filter(category =>
@@ -33,7 +35,8 @@ function Categories (props) {
             type: 'LOAD_SERVICE_CATEGORIES',
             payload: {
                 with_business: true,
-                user_location: user_location
+                user_location: user_location,
+                neighborhoods_selecteds: neighborhoodsSelecteds
             }
         })
 
@@ -49,8 +52,12 @@ function Categories (props) {
 	}, [])
 
 	React.useEffect(() => {	
-		buscaItens();
+        setNeighborhoodsSelecteds('');
 	}, [user_location])
+
+	React.useEffect(() => {	
+		buscaItens();
+	}, [user_location, neighborhoodsSelecteds])
 
     const renderItem = ({item}) => {
         return (
@@ -78,12 +85,19 @@ function Categories (props) {
 
 	return (
 		<View style={[styles.container]}>
+
             <TextInput
                 style={styles.searchInput}
                 placeholder="Pesquisar categorias..."
                 value={searchTerm}
                 onChangeText={text => setSearchTerm(text)}
             />
+            
+			<FilterNeighborhoods 
+                neighborhoodsSelecteds={neighborhoodsSelecteds}
+                setNeighborhoodsSelecteds={setNeighborhoodsSelecteds}
+            />
+
             <FlatList
                 data={filteredCategories}
                 renderItem={renderItem}

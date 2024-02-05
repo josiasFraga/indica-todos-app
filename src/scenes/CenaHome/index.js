@@ -11,8 +11,7 @@ import Categories from "./components/Categories";
 
 import COLORS from '@constants/colors';
 
-type Props = {};
-export default class CenaHome extends Component<Props> {
+export default class CenaHome extends Component {
 
 	state = {
 		deviceId: '',
@@ -40,8 +39,8 @@ export default class CenaHome extends Component<Props> {
 				/>
 
 				<UserLocation />
-
 				<Categories />
+
 			</View>
 		);
 	}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
     View,
     Text,
@@ -6,7 +6,7 @@ import {
 } from 'react-native';
 import { Icon } from 'react-native-elements';
 import COLORS from '@constants/colors';
-import { StackActions, CommonActions, useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import Geolocation from '@react-native-community/geolocation';
 import axios from 'axios';
@@ -85,6 +85,19 @@ export default function UserLocation () {
       }
     
     };
+
+    useEffect(() => {
+        if ( user_location.city && user_location.state ) {
+            dispatch({
+                type: 'LOAD_NEIGHBORHOODS',
+                payload: {
+                    cidade: user_location.city,
+                    estado: user_location.state
+                },
+            });
+    
+        }
+    },[user_location])
 
 
     return (

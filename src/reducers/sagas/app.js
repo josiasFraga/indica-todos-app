@@ -1709,6 +1709,73 @@ function* loadPhotoGallery({payload}) {
 
 }
 
+function* loadNeighborhoods({payload}) {
+
+	console.log('carregando bairros com prestadores cadastrados');
+	console.log(payload);
+
+	const networkStatus = yield NetInfo.fetch();
+
+	if ( !networkStatus.isConnected ) {
+		yield AlertHelper.show(
+			'warn',
+			'Sem conexão',
+			'Sem conexão com a internet.',
+		  );
+		  return true;
+
+	}
+
+	try {
+		const response = yield call(callApi, {
+			endpoint: CONFIG.url + '/service-providers/get-neighborhoods.json',
+			method: 'GET',
+			params: payload
+		});
+
+		if (response.status == 200) {
+			if (response.data.status == 'ok') {
+				console.log('resposta --------------------------------------------------------------------------');
+				console.log(response.data.data);
+				yield put({
+					type: 'LOAD_NEIGHBORHOODS_SUCCESS',
+					payload: response.data.data,
+				});
+	
+			} else {
+				yield AlertHelper.show('error', 'Erro', response.data.message);
+				yield put({
+					type: 'LOAD_NEIGHBORHOODS_FAILED',
+					payload: {},
+				});
+	
+			}
+		} else {
+			yield AlertHelper.show('error', 'Erro', response.data.message);
+			yield put({
+				type: 'LOAD_NEIGHBORHOODS_FAILED',
+				payload: {},
+			});
+
+		}
+
+	} catch ({message, response}) {
+		console.log(response);
+		if (response.data && response.data.code == 401) {
+			yield logout({payload: {}});
+		} else {
+			console.warn('[ERROR : LOAD NEIGHBORHOODS]', {message, response});
+			yield put({
+				type: 'LOAD_NEIGHBORHOODS_FAILED',
+				payload: {},
+			});
+			yield AlertHelper.show('error', 'Erro', message);
+			
+		}
+	}
+
+}
+
 export default function* () {
 	yield takeLatest('CHANGE_PASSWORD_UNAUTHENTICATED', changePasswordUnauthenticated);
 	yield takeLatest('CHECK_SIGNATURE_STATUS', checkSignatureStatus);
@@ -1739,6 +1806,7 @@ export default function* () {
 	yield takeLatest('SAVE_RATING',	saveRating);
 	yield takeLatest('LOAD_REVIEWS', loadReviews);
 	yield takeLatest('LOAD_PHOTO_GALLERY', loadPhotoGallery);
+	yield takeLatest('LOAD_NEIGHBORHOODS', loadNeighborhoods);
 	yield takeLatest('DELETE_USER_ACCOUNT', deleteUserAccount);
 	
 }
