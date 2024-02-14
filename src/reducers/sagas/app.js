@@ -1735,8 +1735,6 @@ function* loadNeighborhoods({payload}) {
 
 		if (response.status == 200) {
 			if (response.data.status == 'ok') {
-				console.log('resposta --------------------------------------------------------------------------');
-				console.log(response.data.data);
 				yield put({
 					type: 'LOAD_NEIGHBORHOODS_SUCCESS',
 					payload: response.data.data,
@@ -1776,6 +1774,21 @@ function* loadNeighborhoods({payload}) {
 
 }
 
+function* triggerSetSelectedsNeighborhoods({payload}) {
+
+	console.log('setando bairros selecionados');
+	console.log(payload);
+
+	yield put({
+		type: 'SET_SELECTEDS_NEIGHBORHOODS',
+		payload: payload.fields,
+	});
+
+	if ( payload.callbackSuccess ) {
+		yield payload.callbackSuccess();
+	}
+}
+
 export default function* () {
 	yield takeLatest('CHANGE_PASSWORD_UNAUTHENTICATED', changePasswordUnauthenticated);
 	yield takeLatest('CHECK_SIGNATURE_STATUS', checkSignatureStatus);
@@ -1807,6 +1820,7 @@ export default function* () {
 	yield takeLatest('LOAD_REVIEWS', loadReviews);
 	yield takeLatest('LOAD_PHOTO_GALLERY', loadPhotoGallery);
 	yield takeLatest('LOAD_NEIGHBORHOODS', loadNeighborhoods);
+	yield takeLatest('TRIGGER_SET_SELECTEDS_NEIGHBORHOODS', triggerSetSelectedsNeighborhoods);
 	yield takeLatest('DELETE_USER_ACCOUNT', deleteUserAccount);
 	
 }

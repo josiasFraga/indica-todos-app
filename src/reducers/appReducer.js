@@ -34,7 +34,8 @@ const INITIAL_STATE = {
  photo_gallery: [],
  is_photo_gallery_loading: false,
  neighborhoods: [],
- is_neighborhoods_loading: false
+ is_neighborhoods_loading: false,
+ selecteds_neighborhoods: ''
 };
 
 export const appReducer = (state = INITIAL_STATE, action) => {
@@ -87,7 +88,7 @@ export const appReducer = (state = INITIAL_STATE, action) => {
     case 'LOAD_USER_DATA_SUCCESS':
 		return {...state, user_data: action.payload, user_data_loading: false };
     case 'LOAD_USER_DATA_FAILED':
-		return {...state, user_data_loading: false};
+		return {...state, user_data: INITIAL_STATE.user_data, user_data_loading: false};
   
     case 'LOAD_DASHBOARD_DATA':
 		return {...state, is_dashboard_data_loading: true};
@@ -136,7 +137,10 @@ export const appReducer = (state = INITIAL_STATE, action) => {
     case 'LOAD_NEIGHBORHOODS_SUCCESS':
 		return {...state, neighborhoods: action.payload, is_neighborhoods_loading: false };
     case 'LOAD_NEIGHBORHOODS_FAILED':
-		return {...state, is_neighborhoods_loading: false};
+		return {...state, is_neighborhoods_loading: false}; 
+  
+    case 'SET_SELECTEDS_NEIGHBORHOODS':
+		return {...state, selecteds_neighborhoods: action.payload };
     
     default:
 		return state;

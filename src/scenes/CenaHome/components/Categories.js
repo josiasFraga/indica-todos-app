@@ -18,14 +18,25 @@ function Categories (props) {
     const navigation = useNavigation();
 
     const service_categories = useSelector(state => state.appReducer.service_categories);
+    const selecteds_neighborhoods = useSelector(state => state.appReducer.selecteds_neighborhoods);
     const service_categories_loading = useSelector(state => state.appReducer.service_categories_loading);
     const user_location = useSelector(state => state.appReducer.user_location);
     const [searchTerm, setSearchTerm] = React.useState('');
-    const [neighborhoodsSelecteds, setNeighborhoodsSelecteds] = React.useState('');
+
+    const setNeighborhoodsSelecteds = (data) => {
+
+        dispatch({
+            type: 'TRIGGER_SET_SELECTEDS_NEIGHBORHOODS',
+            payload: {
+                fields: data
+            }
+        })
+
+    }
 
     const filteredCategories = searchTerm
     ? service_categories.filter(category =>
-          category.name.toLowerCase().includes(searchTerm.toLowerCase())
+          category.name.toLowerCase().includes(searchTerm.toLowerCase()) || category._subcategories_string.toLowerCase().includes(searchTerm.toLowerCase())
       )
     : service_categories;
 
@@ -36,7 +47,7 @@ function Categories (props) {
             payload: {
                 with_business: true,
                 user_location: user_location,
-                neighborhoods_selecteds: neighborhoodsSelecteds
+                neighborhoods_selecteds: selecteds_neighborhoods
             }
         })
 
@@ -52,12 +63,14 @@ function Categories (props) {
 	}, [])
 
 	React.useEffect(() => {	
+
         setNeighborhoodsSelecteds('');
+        
 	}, [user_location])
 
 	React.useEffect(() => {	
 		buscaItens();
-	}, [user_location, neighborhoodsSelecteds])
+	}, [user_location, selecteds_neighborhoods])
 
     const renderItem = ({item}) => {
         return (
@@ -94,7 +107,7 @@ function Categories (props) {
             />
             
 			<FilterNeighborhoods 
-                neighborhoodsSelecteds={neighborhoodsSelecteds}
+                neighborhoodsSelecteds={selecteds_neighborhoods}
                 setNeighborhoodsSelecteds={setNeighborhoodsSelecteds}
             />
 

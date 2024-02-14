@@ -16,15 +16,18 @@ function Lista (props) {
     const service_providers = useSelector(state => state.appReducer.service_providers);
     const service_providers_loading = useSelector(state => state.appReducer.service_providers_loading);
     const user_location = useSelector(state => state.appReducer.user_location);
+    const selecteds_neighborhoods = useSelector(state => state.appReducer.selecteds_neighborhoods);
     const categoria_id = props.categoria_id;
 
     const loadItems = () => {
         console.log(user_location);
+        console.debug(filters);
         let filters = {
             categoria_id: categoria_id,
             subcategorias_ids: props.subcategorias_ids.join(','),
             city: user_location.city,
             state: user_location.state,
+            selecteds_neighborhoods: selecteds_neighborhoods
         };
     
         dispatch({
@@ -44,6 +47,7 @@ function Lista (props) {
         const services_arr = item.services.map(service => {
             return service.title
         });
+        console.debug(item);
         return (
             <ListItem bottomDivider onPress={()=>{
                 
@@ -58,6 +62,9 @@ function Lista (props) {
             }}>
                     <ListItem.Content>
                         <ListItem.Title>{item.name}</ListItem.Title>
+                    {item._user && item._user.name && 
+                        <ListItem.Subtitle>Profissional: {item._user.name}</ListItem.Subtitle>
+                    }
                         <ListItem.Subtitle>Serviços Prestados: {services_arr.join(', ')}</ListItem.Subtitle>
                         <ListItem.Subtitle>Subcategorias: {item._subcategories.join(', ')}</ListItem.Subtitle>
                     </ListItem.Content>

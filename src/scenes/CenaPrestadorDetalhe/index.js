@@ -121,6 +121,7 @@ export default function CenaPrestadorDetalhe(props) {
         {serviceProvider.name}
         </Text>
 
+        {serviceProvider._user && serviceProvider._user.name && <Text style={GlobalStyle.textBlack}>Nome do Profissional: {serviceProvider._user.name}</Text>}
         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Text style={[GlobalStyle.textBlack, { verticalAlign: 'middle', marginRight: 8}]}>Telefone:</Text>

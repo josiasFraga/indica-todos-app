@@ -22,14 +22,15 @@ export default function MenusUsuario (props) {
           payload: {
               callbackSuccess: () => {
 
-                  navigation.dispatch(
-                      CommonActions.reset({
-                          index: 1,
-                          routes: [
-                          { name: 'PreLogin' },
-                          ],
-                      })
-                  )
+                navigation.dispatch(
+                    CommonActions.reset({
+                        index: 1,
+                        routes: [
+                        { name: 'PreLogin' },
+                        ],
+                    })
+                )
+                  
               }
           }
       })

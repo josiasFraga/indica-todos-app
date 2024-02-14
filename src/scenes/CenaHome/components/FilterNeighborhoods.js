@@ -18,8 +18,7 @@ export default function FilterNeighborhoods(props) {
 
 	const neighborhoods = useSelector((state) => state.appReducer.neighborhoods);
 	const [modalVisible, setModalVisible] = React.useState(false);
-    const [neighborhoodsSelecteds, setNeighborhoodsSelecteds] = useState(props.neighborhoodsSelecteds.split(','));
-    
+    const [neighborhoodsSelecteds, setNeighborhoodsSelecteds] = useState(props.neighborhoodsSelecteds ? props.neighborhoodsSelecteds.split(',') : '');
 
     const toggleSelection = (neighborhood) => {
         if (neighborhoodsSelecteds.includes(neighborhood)) {

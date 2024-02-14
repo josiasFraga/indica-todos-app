@@ -21,20 +21,21 @@ export default function CenaPerfil(props) {
   const userData = useSelector((state) => state.appReducer.user_data);
 
   const componentDidMount = async () => {
-  const authToken = await AsyncStorage.getItem("bearerToken");
-	const userType = await AsyncStorage.getItem('userType');
+    const authToken = await AsyncStorage.getItem("bearerToken");
+    const userType = await AsyncStorage.getItem('userType');
 
-    if ( userType != null ) {
-        setUserType(userType);
-    }
+      if ( userType != null ) {
+          setUserType(userType);
+      }
 
-    if (!authToken || authToken == null) {
-      setGhest(true);
-    } else {
-      dispatch({
-        type: "LOAD_USER_DATA",
-      });
-    }
+      if (!authToken || authToken == null) {
+        setGhest(true);
+      } else {
+        dispatch({
+          type: "LOAD_USER_DATA",
+        });
+      }
+
   };
 
   React.useEffect(() => {
