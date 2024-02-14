@@ -1,49 +1,77 @@
-import React, {Component} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-	StyleSheet,
-	View,
-	StatusBar,
+  StyleSheet,
+  View,
+  StatusBar,
+  Linking, // Importe Linking para usar na função onPress do FAB
 } from 'react-native';
 import { getUniqueId } from 'react-native-device-info';
+import { FAB } from 'react-native-elements';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 import Header from "@components/Header";
 import UserLocation from "@components/UserLocation";
 import Categories from "./components/Categories";
 
 import COLORS from '@constants/colors';
+import CONFIG from '@constants/configs';
 
-export default class CenaHome extends Component {
+const CenaHome = () => {
+  const [deviceId, setDeviceId] = useState('');
+  const [userType, setUserType] = React.useState('');
 
-	state = {
-		deviceId: '',
+
+  const componentDidMount = async () => {
+    const userTypeStorage = await AsyncStorage.getItem('userType');
+
+      if ( userTypeStorage != null ) {
+          setUserType(userTypeStorage);
+      }
+
+  };
+
+  useEffect(() => {
+    const fetchDeviceId = async () => {
+      const id = await getUniqueId();
+      setDeviceId(id);
+    };
+
+    fetchDeviceId();
+  }, []);
+
+  useEffect(() => {
+	componentDidMount();
+  }, []);
+
+  return (
+    <View style={styles.container}>
+      <StatusBar
+        translucent={true}
+        backgroundColor={'transparent'}
+        barStyle={'light-content'}
+      />
+
+      <Header
+        titulo="Indica Todos"
+        styles={{ backgroundColor: COLORS.primary }}
+        titleStyle={{ color: '#f7f7f7' }}
+      />
+
+      <UserLocation />
+      <Categories />
+	{userType == 'servide_provider' &&
+      <FAB 
+        title="Ajuda" 
+        placement="right"
+        color={'green'}
+        onPress={() => {
+          Linking.openURL('https://api.whatsapp.com/send?phone=+' + CONFIG.support_number);
+        }}
+        icon={{ name: 'whatsapp', type: 'font-awesome', color: 'white' }}
+      />
 	}
-
-	componentDidMount = async () => {
-		const deviceId = await getUniqueId();
-		this.setState({deviceId: deviceId});
-
-	}
-
-	render() {
-		return (
-			<View style={styles.container}>
-				<StatusBar
-					translucent={true}
-					backgroundColor={'transparent'}
-					barStyle={'light-content'}
-				/>
-    
-				<Header
-					titulo="Indica Todos"
-					styles={{ backgroundColor: COLORS.primary }}
-					titleStyle={{ color: '#f7f7f7' }}
-				/>
-
-				<UserLocation />
-				<Categories />
-
-			</View>
-		);
-	}
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -103,3 +131,5 @@ const styles = StyleSheet.create({
 		alignSelf: 'flex-end',
 	}
 });
+
+export default CenaHome;

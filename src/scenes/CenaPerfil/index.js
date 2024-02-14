@@ -1,7 +1,7 @@
 import React from "react";
 
-import { StyleSheet, View, Image, StatusBar, ScrollView } from "react-native";
-import { Avatar, Text } from "react-native-elements";
+import { StyleSheet, View, StatusBar, ScrollView } from "react-native";
+import { Avatar, Text, FAB } from "react-native-elements";
 import GlobalStyle from "@styles/global";
 import { useDispatch, useSelector } from "react-redux";
 import MenusUsuario from './components/MenusUsuario';
@@ -107,6 +107,17 @@ export default function CenaPerfil(props) {
           }
         </ScrollView>
       </View>
+    {userType == 'servide_provider' &&
+      <FAB 
+        title="Ajuda" 
+        placement="right"
+        color={'green'}
+        onPress={() => {
+          Linking.openURL('https://api.whatsapp.com/send?phone=+' + CONFIG.support_number);
+        }}
+        icon={{ name: 'whatsapp', type: 'font-awesome', color: 'white' }}
+      />
+	  }
     </View>
   );
 }

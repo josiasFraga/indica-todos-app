@@ -1,8 +1,11 @@
 import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, StatusBar, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, StatusBar, TouchableOpacity, Linking } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import Header from "@components/Header";
 import COLORS from '@constants/colors';
+import { FAB } from 'react-native-elements'; 
+
+import CONFIG from '@constants/configs';
 
 const CenaHomeProvider = () => {
     const dispatch = useDispatch();
@@ -66,6 +69,15 @@ const CenaHomeProvider = () => {
                         <Text style={styles.tileCaption}>{data.week_avg}</Text>
                     </TouchableOpacity>
                 </View>
+                <FAB 
+                    title="Ajuda" 
+                    placement="right"
+                    color={'green'}
+                    onPress={() => {
+                        Linking.openURL('https://api.whatsapp.com/send?phone=+' + CONFIG.support_number);
+                    }}
+                    icon={{ name: 'whatsapp', type: 'font-awesome', color: 'white' }}
+                />
             </View>
         </>
     );
