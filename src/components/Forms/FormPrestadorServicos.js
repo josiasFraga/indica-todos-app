@@ -57,17 +57,29 @@ export default function FormPrestadorServicos(props) {
   };
 
   const maskMoney = (text) => {
+    // Regex para extrair apenas números
     let numberPattern = /\d+/g;
-    let formated = text.match(numberPattern).join('');
-    formated = formated / 100;
-    formated = number_format(formated, 2, ',', '.');
-    formated = 'R$ ' + formated;
-
-    if (formated == 'R$ 0,00') {
-      formated = '';
+    
+    // Extrai os números do texto
+    let numbers = text.match(numberPattern);
+    
+    // Verifica se existem números extraídos
+    if (numbers) {
+        // Concatena os números extraídos em uma string
+        let numberString = numbers.join('');
+        
+        // Converte a string de números em um valor numérico e divide por 100 para obter o valor em reais
+        let amount = parseFloat(numberString) / 100;
+        
+        // Formata o valor em moeda
+        let formatted = amount.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        
+        // Retorna o valor formatado
+        return formatted;
+    } else {
+        // Retorna uma string vazia se nenhum número for encontrado no texto
+        return '';
     }
-
-    return formated;
   }
 
   return (
