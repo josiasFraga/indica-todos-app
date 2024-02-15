@@ -16,5 +16,5 @@ export default {
     Platform.OS === 'ios' ? 70 + 30 : 70 - 24 + StatusBar.currentHeight,
   ORIGINAL_HEADER_HEIGHT_WITHOUT_STATUS_BAR:
     Platform.OS === 'ios' ? 70 : 70 - 24,
-  support_number: '+5513996189515',
+  support_number: '+5513996721343',
 };

@@ -65,7 +65,7 @@ const CenaHome = () => {
         placement="right"
         color={'green'}
         onPress={() => {
-          Linking.openURL('https://api.whatsapp.com/send?phone=+' + CONFIG.support_number);
+          Linking.openURL('https://api.whatsapp.com/send?phone=' + CONFIG.support_number);
         }}
         icon={{ name: 'whatsapp', type: 'font-awesome', color: 'white' }}
       />

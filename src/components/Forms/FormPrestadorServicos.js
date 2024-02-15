@@ -154,6 +154,7 @@ export default function FormPrestadorServicos(props) {
                         formik.touched.services?.[index]?.price &&
                         formik.errors.services?.[index]?.price
                         }
+                        keyboardType="numeric"
                     />
                 </View>
                 <View style={{flex: 1}}>
