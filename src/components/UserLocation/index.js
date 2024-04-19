@@ -63,7 +63,6 @@ export default function UserLocation () {
           );
     }
 
-
     const getCityAndStateFromCoordinates = async (latitude, longitude) => {
       try {
         const response = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${GOOGLE_MAPS_API_KEY}`);
@@ -98,7 +97,6 @@ export default function UserLocation () {
     
         }
     },[user_location])
-
 
     return (
         <TouchableHighlight  
